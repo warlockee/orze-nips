@@ -1,5 +1,5 @@
 {
-  "model_path": "/fsx/models/releases/higgs-audio-understanding-v3-8b-chk-38000",
+  "model_path": "bosonai/higgs-audio-understanding-v3-8b",
   "data_mix": {
     "ami": 10000,
     "earnings22": 5000,

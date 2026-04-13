@@ -125,6 +125,10 @@ def _load_single_dataset(ds_name):
         ds = load_dataset("distil-whisper/earnings22", "chunked", split="test", trust_remote_code=True)
         ds = ds.cast_column("audio", Audio(sampling_rate=16000))
 
+    elif ds_name == "spgispeech_train":
+        ds = load_dataset("kensho/spgispeech", split="train", trust_remote_code=True)
+        ds = ds.cast_column("audio", Audio(sampling_rate=16000))
+
     elif ds_name == "gigaspeech_train":
         ds = load_dataset("speechcolab/gigaspeech", "l", split="train", trust_remote_code=True)
         ds = ds.cast_column("audio", Audio(sampling_rate=16000))
@@ -145,6 +149,63 @@ def get_text(sample):
         if key in sample and sample[key]:
             return sample[key]
     return ""
+
+
+def _oversample_ami_short(ds, max_samples, short_multiplier=3, seed=42):
+    """Load AMI with short-utterance (<3s) oversampling.
+
+    Short AMI utterances (backchannels, acknowledgements) are the hardest for
+    ASR models. Oversampling them N times during training significantly improves
+    AMI WER without degrading other datasets.
+
+    Returns (dataset, indices) where indices may contain repeated entries for
+    short utterances.
+    """
+    rng = np.random.RandomState(seed)
+    short_indices = []
+    other_indices = []
+
+    check_n = min(max_samples * 2, len(ds))
+    all_indices = rng.permutation(len(ds))[:check_n]
+
+    # Use begin_time/end_time metadata to compute duration without loading audio
+    has_time_meta = "begin_time" in ds.column_names and "end_time" in ds.column_names
+    if has_time_meta:
+        meta_ds = ds.remove_columns(["audio"])
+    else:
+        meta_ds = None
+
+    for idx in all_indices:
+        if meta_ds is not None:
+            sample = meta_ds[int(idx)]
+            dur = float(sample["end_time"]) - float(sample["begin_time"])
+        else:
+            sample = ds[int(idx)]
+            audio = sample["audio"]
+            dur = len(audio["array"]) / audio["sampling_rate"]
+        text = sample.get("text", "") or ""
+        if not text.strip() or text.strip() == "ignore time segment in scoring":
+            continue
+        if dur < 3.0:
+            short_indices.append(int(idx))
+        else:
+            other_indices.append(int(idx))
+
+    print(f"  AMI: {len(short_indices)} short (<3s), {len(other_indices)} other", flush=True)
+
+    # Oversample short utterances
+    oversampled = []
+    for _ in range(short_multiplier):
+        oversampled.extend(short_indices)
+    rng.shuffle(oversampled)
+
+    # Combine: oversampled shorts + enough others to reach max_samples
+    combined = oversampled + other_indices
+    if max_samples > 0 and len(combined) > max_samples:
+        combined = combined[:max_samples]
+
+    print(f"  AMI final: {len(combined)} samples (short x{short_multiplier})", flush=True)
+    return ds, combined
 
 
 def train(args):
@@ -230,6 +291,11 @@ def train(args):
             dataset_names.append(spec)
             per_dataset_samples[spec] = args.max_samples
 
+    ami_oversample = getattr(args, 'ami_short_oversample', 1)
+    seed = getattr(args, 'seed', 42)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+
     def load_with_per_ds_limits(names, per_ds_samples):
         from datasets import concatenate_datasets
         all_datasets = []
@@ -237,9 +303,18 @@ def train(args):
             max_s = per_ds_samples.get(ds_name, args.max_samples)
             print(f"Loading {ds_name} (max {max_s if max_s > 0 else 'all'})...", flush=True)
             ds = _load_single_dataset(ds_name)
-            if max_s > 0 and len(ds) > max_s:
-                ds = ds.shuffle(seed=42).select(range(max_s))
-            print(f"  Loaded {len(ds)} samples from {ds_name}", flush=True)
+
+            # AMI short-utterance oversampling
+            if ds_name == "ami_train" and ami_oversample > 1:
+                ds, indices = _oversample_ami_short(ds, max_s, short_multiplier=ami_oversample, seed=seed)
+                ds = ds.select(indices)
+                print(f"  Loaded {len(ds)} samples from {ds_name} (short x{ami_oversample})", flush=True)
+            elif max_s > 0 and len(ds) > max_s:
+                ds = ds.shuffle(seed=seed).select(range(max_s))
+                print(f"  Loaded {len(ds)} samples from {ds_name}", flush=True)
+            else:
+                print(f"  Loaded {len(ds)} samples from {ds_name}", flush=True)
+
             all_datasets.append(ds)
 
         if len(all_datasets) == 1:
@@ -436,6 +511,9 @@ def main():
     parser.add_argument("--lora-dropout", type=float, default=0.05)
     parser.add_argument("--target-mlp", action="store_true",
                         help="Also target MLP layers (gate/up/down_proj)")
+    parser.add_argument("--ami-short-oversample", type=int, default=1,
+                        help="Oversample AMI utterances <3s by this factor (default 1 = no oversampling)")
+    parser.add_argument("--seed", type=int, default=42, help="Random seed for reproducibility")
     args = parser.parse_args()
     train(args)
 

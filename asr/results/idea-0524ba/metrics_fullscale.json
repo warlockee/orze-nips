@@ -1,0 +1,17 @@
+{
+  "note": "Full-scale evaluation (all samples per dataset). This is the official result.",
+  "avg_wer": 5.30,
+  "per_dataset": {
+    "ami": 6.23,
+    "earnings22": 11.33,
+    "gigaspeech": 9.34,
+    "librispeech_test_clean_esb": 1.24,
+    "librispeech_test_other_esb": 2.34,
+    "spgispeech": 3.14,
+    "tedlium": 3.14,
+    "voxpopuli": 5.63
+  },
+  "verified_at": "2026-04-03",
+  "model": "bosonai/higgs-audio-understanding-v3-8b",
+  "lora": "idea-0524ba"
+}

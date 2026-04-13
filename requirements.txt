@@ -15,6 +15,16 @@ pyyaml>=6.0
 # Analysis & figures
 matplotlib>=3.7.0
 
+# ASR case study (Appendix D)
+transformers>=4.40.0
+peft>=0.10.0
+datasets>=2.18.0
+evaluate>=0.4.0
+whisper-normalizer>=1.0.0
+accelerate>=0.28.0
+soundfile>=0.12.0
+librosa>=0.10.0
+
 # Orchestrator (install from submodule)
 # pip install -e ./orze
 # pip install -e ./orze-pro  # optional, for LLM-guided research roles

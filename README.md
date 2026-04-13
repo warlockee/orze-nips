@@ -103,22 +103,29 @@ python model_soup.py --results-dir results --top-k 5
 
 ### Recipe C: ASR LoRA Fine-Tuning (Appendix D)
 
-Fine-tunes the Qwen3-8B decoder of HiggsAudio3 using LoRA while keeping the Whisper-Large-v3 encoder frozen.
+Fine-tunes the Qwen3-8B decoder of HiggsAudio3 using LoRA while keeping the Whisper-Large-v3 encoder frozen. Requires the `boson-multimodal` model library:
+
+```bash
+# Install the HiggsAudio3 model library (required for ASR)
+git clone https://github.com/bosonai/boson-multimodal-ref.git
+export BOSON_PATH=$(pwd)/boson-multimodal-ref
+```
 
 ```bash
 cd asr/
 
-# Set model paths (or use HuggingFace hub IDs)
+# Set model paths (or use HuggingFace hub IDs; defaults work if models are on HF)
 export BOSON_PATH=/path/to/boson-multimodal-ref
-export MODEL_PATH=bosonai/higgs-audio-understanding-v3-8b
-export WHISPER_PATH=openai/whisper-large-v3
+export MODEL_PATH=bosonai/higgs-audio-understanding-v3-8b   # default
+export WHISPER_PATH=openai/whisper-large-v3                  # default
 
 # Reproduce the best result (idea-0524ba, 5.30% WER)
 python train.py \
   --datasets ami_train:10000,earnings22_train:5000,librispeech_train:3000,spgispeech_train:6000,tedlium_train:3000,voxpopuli_train:4000 \
   --output-dir checkpoints/8b_lora_best \
   --epochs 1 --lr 2e-5 --lora-rank 64 --lora-alpha 128 \
-  --lora-dropout 0.02 --grad-accum 4 --target-mlp
+  --lora-dropout 0.02 --grad-accum 4 --target-mlp \
+  --ami-short-oversample 10 --seed 42
 
 # Full LLM-guided campaign via Orze
 orze run --config configs/orze.yaml
@@ -131,6 +138,7 @@ orze run --config configs/orze.yaml
 | `--lr` | 2e-5 | Learning rate with cosine decay |
 | `--target-mlp` | enabled | Also apply LoRA to MLP layers |
 | `--grad-accum` | 4 | Gradient accumulation steps |
+| `--ami-short-oversample` | 10 | Oversample AMI utterances <3s by 10x |
 
 ## Evaluation
 
