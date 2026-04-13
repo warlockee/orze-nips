@@ -1,0 +1,124 @@
+{
+  "status": "COMPLETED",
+  "avg_wer": 5.09,
+  "wer_ami": 6.21,
+  "wer_earnings22": 10.03,
+  "wer_gigaspeech": 8.91,
+  "wer_librispeech_test_clean_esb": 1.09,
+  "wer_librispeech_test_other_esb": 2.03,
+  "wer_spgispeech": 3.35,
+  "wer_tedlium": 3.14,
+  "wer_voxpopuli": 5.96,
+  "num_eval_tasks": 8,
+  "training_time": 18038.32,
+  "error_analysis": {
+    "worst_dataset": "earnings22",
+    "worst_wer": 31.87,
+    "total_samples": 4000,
+    "total_errors": 3018,
+    "failure_patterns": [
+      {
+        "pattern": "substitution",
+        "count": 3016,
+        "pct": 75.4,
+        "examples": [
+          {
+            "ref": "Um and then I'll be coming to you as the User Interface person to try to tell me from your point of view what are the most friendly features that we could put on it and try to prior help me with that prioritising of uh of the features and of the the look and the colour and I'll be coming back to you to help weed out those suggestions from that point of view.",
+            "hyp": "um and then i'll be coming to you as the user interface person to try to tell me from your point of view what are the most friendly features that we could put on it and try to prior help me with that prioritizing of uh of the features and of the the look and the color and i'll be coming back to you to help weed out those suggestions from that point of view",
+            "wer": 0.04,
+            "duration_s": 22.5
+          },
+          {
+            "ref": "It should be a battery because uh uh remote controller should be like you you you should take it t to wherever you want and then um uh th this integrated circuitry takes energy from the power source and whatever like if you press a button it's like a input for the remote controller and it takes the input and it it transforms into a infro infrared bits and it sends it into the device,",
+            "hyp": "it should be a battery because uh uh remote control should be like you you you should take it to to wherever you want and then uh uh th this integrated circuit it t takes energy from the power source and whatever like if you press a button it's like a input for the remote controller and it takes the input and it it transforms into uh infor infrared bits and it sends it it to the device",
+            "wer": 0.147,
+            "duration_s": 22.5
+          },
+          {
+            "ref": "He he d he doesn't have to know exactly what I mean, yeah m I mean it's hot finished, but it doesn't really say",
+            "hyp": "it it doesn't have to know exactly what i've done i mean yeah i meant i mean it's not finished but it doesn't really say",
+            "wer": 0.458,
+            "duration_s": 7.2
+          },
+          {
+            "ref": "it'll connect the circuit and each each switch is connected to two uh different legs on the chip and so sends a different message and that then uh gets translated by the chip into a code and then it's fired out of this L. E. D. in the sequence of l on and off bursts.",
+            "hyp": "it'll connect the circuit and each each switch is connected to to uh different legs on the chip and so sends a different message and that then uh gets translated by the chip into a code and then it's fired out of this l. e. d. in a sequence of l on and off bursts",
+            "wer": 0.055,
+            "duration_s": 16.5
+          },
+          {
+            "ref": "you want to change the channel you want to control the volume you you want to uh mute uh mute the uh T. V. or you want to have a child lock or you want to do some operations there's a there should be some device to tell what to do to the uh in uh integrated circuit so that the integrated circuit can s send the signals and T. V. can perform the actions.",
+            "hyp": "you want to change the channel you want to control the volume you you want to uh mute uh mute the uh t. v. or you want to have a child lock or you want to do some operations there should be sh there should be some device to tell what to do to the uh in uh integrated circuit so that the integrated circuit can s send the signals and t. v. can perform the actions",
+            "wer": 0.067,
+            "duration_s": 22.5
+          }
+        ]
+      },
+      {
+        "pattern": "partial_deletion",
+        "count": 2,
+        "pct": 0.1,
+        "examples": [
+          {
+            "ref": "Yeah, exact exact Mm visible minorities.",
+            "hyp": "visible minorities",
+            "wer": 0.833,
+            "duration_s": 1.8
+          },
+          {
+            "ref": "And one, I don't know.",
+            "hyp": "uh",
+            "wer": 1.0,
+            "duration_s": 1.5
+          }
+        ]
+      }
+    ],
+    "short_audio_stats": {
+      "total": 2,
+      "errors": 2,
+      "error_rate": 100.0,
+      "avg_duration_s": 0.3
+    },
+    "recommendations": [
+      "Short audio error rate is 100.0% \u2014 add padding or specialized short-audio training data",
+      "Include gigaspeech training data to prevent regression (WER=18.1%)"
+    ],
+    "dataset_wers": {
+      "ami": 15.67,
+      "earnings22": 31.87,
+      "gigaspeech": 18.11,
+      "librispeech_test_clean_esb": 1.2,
+      "librispeech_test_other_esb": 2.3,
+      "spgispeech": 14.98,
+      "tedlium": 3.72,
+      "voxpopuli": 6.62
+    },
+    "analysis_time": 4.51
+  },
+  "next_training_proposal": {
+    "training_proposal": true,
+    "data_mix": {
+      "ami": 15000,
+      "earnings22": 5000,
+      "librispeech": 3000,
+      "spgispeech": 6000,
+      "tedlium": 3000,
+      "voxpopuli": 4000,
+      "gigaspeech": 5000
+    },
+    "ami_short_oversample": 10,
+    "rank": 64,
+    "lr": 2e-05,
+    "epochs": 1,
+    "lora_alpha": 128,
+    "lora_dropout": 0.02,
+    "grad_accum": 4,
+    "target_mlp": true,
+    "description": "Auto-fix: AMI\u219215000 + add GigaSpeech (worst=earnings22@31.9%)"
+  },
+  "training_loss": 0.280597,
+  "training_samples": 20000,
+  "training_steps": 4990,
+  "lora_checkpoint": "results/idea-0524ba/lora_checkpoint/best"
+}

@@ -1,0 +1,21 @@
+{
+  "model_path": "/fsx/models/releases/higgs-audio-understanding-v3-8b-chk-38000",
+  "data_mix": {
+    "ami": 10000,
+    "earnings22": 5000,
+    "librispeech": 3000,
+    "spgispeech": 6000,
+    "tedlium": 3000,
+    "voxpopuli": 4000
+  },
+  "ami_short_oversample": 10,
+  "total_training_items": 20000,
+  "epochs": 1,
+  "lr": 2e-05,
+  "rank": 64,
+  "lora_alpha": 128,
+  "lora_dropout": 0.02,
+  "best_loss": 0.2805971428613841,
+  "total_steps": 4990,
+  "training_time": 6557.73
+}

@@ -17,7 +17,7 @@ venv/
 
 # Data & checkpoints (too large for git)
 features/
-results/
+/results/
 experiments/data/
 *.pt
 *.pth

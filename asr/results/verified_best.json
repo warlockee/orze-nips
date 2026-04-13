@@ -1,0 +1,21 @@
+{
+  "model": "higgs-audio-v3-8b + LoRA idea-0524ba",
+  "lora": "results/idea-0524ba/lora_checkpoint/best",
+  "description": "10x AMI short oversample + 6K SPG + MLP targeting, rank 64",
+  "scale": 1.0,
+  "avg_wer": 5.30,
+  "per_dataset": {
+    "AMI": 6.23,
+    "E22": 11.33,
+    "GS": 9.34,
+    "LS-C": 1.24,
+    "LS-O": 2.34,
+    "SPG": 3.14,
+    "TED": 3.14,
+    "VP": 5.63
+  },
+  "target": 5.40,
+  "gap": -0.10,
+  "note": "Full-scale evaluation with Whisper EnglishTextNormalizer. All 8 ESB datasets, all samples. First checkpoint produced by orze autonomous training loop.",
+  "verified_at": "2026-04-03"
+}

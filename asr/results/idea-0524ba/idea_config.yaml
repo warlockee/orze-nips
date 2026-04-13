@@ -1,0 +1,13 @@
+ami_short_oversample: 10
+data_mix:
+  ami: 10000
+  earnings22: 5000
+  librispeech: 3000
+  spgispeech: 6000
+  tedlium: 3000
+  voxpopuli: 4000
+epochs: 1
+lr: 2.0e-05
+rank: 64
+target_mlp: true
+training_proposal: true
