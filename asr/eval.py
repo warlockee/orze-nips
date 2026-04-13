@@ -6,14 +6,21 @@ official Whisper text normalizer, matching the HuggingFace leaderboard methodolo
 
 Architecture: Whisper-Large-v3 encoder + Qwen decoder (1.7B or 8B).
 
-Usage:
-    CUDA_VISIBLE_DEVICES=0 python eval.py [--datasets ami,earnings22,...] [--max-samples N]
-    CUDA_VISIBLE_DEVICES=0 python eval.py --lora-path checkpoints/best
+The merged model on HuggingFace bundles all necessary code, so no external
+library installation is needed beyond `pip install -r requirements.txt`.
 
-Environment variables:
-    BOSON_PATH:  Path to boson-multimodal-ref library
-    MODEL_PATH:  Path to HiggsAudio3 checkpoint (8B or 1.7B)
-    WHISPER_PATH: Path to Whisper-Large-v3 processor
+Usage:
+    # Evaluate the published merged model (LoRA already baked in)
+    CUDA_VISIBLE_DEVICES=0 python eval.py --model bosonai/higgs-audio-v3-8b-stt
+
+    # Evaluate on specific datasets
+    CUDA_VISIBLE_DEVICES=0 python eval.py --model bosonai/higgs-audio-v3-8b-stt --datasets ami,earnings22
+
+    # Quick 500-sample eval for iteration
+    CUDA_VISIBLE_DEVICES=0 python eval.py --model bosonai/higgs-audio-v3-8b-stt --max-samples 500
+
+    # Evaluate a base model + separate LoRA adapter
+    CUDA_VISIBLE_DEVICES=0 python eval.py --model /path/to/base --lora-path /path/to/lora
 """
 import argparse
 import json
@@ -21,35 +28,11 @@ import os
 import re
 import sys
 import time
-from dataclasses import asdict
-from functools import partial
 from pathlib import Path
 
 import numpy as np
 import torch
-
-# ---------------------------------------------------------------------------
-# Model registration
-# ---------------------------------------------------------------------------
-BOSON_PATH = os.environ.get("BOSON_PATH", "boson-multimodal-ref")
-sys.path.insert(0, BOSON_PATH)
-
-from boson_multimodal.model.higgs_audio_3.configuration_higgs_audio import (
-    HiggsAudio3Config, HiggsAudioEncoderConfig,
-)
-from boson_multimodal.model.higgs_audio_3.modeling_higgs_audio import HiggsAudio3Model
 from transformers import AutoConfig, AutoModel, AutoTokenizer, WhisperProcessor
-
-try:
-    AutoConfig.register("higgs_audio_encoder", HiggsAudioEncoderConfig)
-    AutoConfig.register("higgs_audio_3", HiggsAudio3Config)
-    AutoModel.register(HiggsAudio3Config, HiggsAudio3Model)
-except ValueError:
-    pass
-
-from boson_multimodal.data_collator.higgs_audio_collator import HiggsAudioSampleCollator
-from boson_multimodal.data_types import ChatMLSample, AudioContent, Message
-from boson_multimodal.dataset.chatml_dataset import ChatMLDatasetSample, prepare_chatml_sample_qwen
 
 # Whisper normalizer (official leaderboard normalization)
 from whisper_normalizer.english import EnglishTextNormalizer
@@ -59,11 +42,8 @@ normalizer = EnglishTextNormalizer()
 # ---------------------------------------------------------------------------
 # Config
 # ---------------------------------------------------------------------------
-MODEL_PATH = os.environ.get("MODEL_PATH", "bosonai/higgs-audio-understanding-v3-8b")
-WHISPER_PATH = os.environ.get("WHISPER_PATH", "openai/whisper-large-v3")
 ESB_DATASET = "hf-audio/esb-datasets-test-only-sorted"
 
-# The official leaderboard uses these 7 datasets (with librispeech split into clean+other = 8 WER values)
 LEADERBOARD_DATASETS = [
     "ami",
     "earnings22",
@@ -77,21 +57,26 @@ LEADERBOARD_DATASETS = [
 # Best prompt from 1000+ experiments
 USER_PROMPT = "Transcribe the speech. Output only the spoken words in lowercase with no punctuation."
 ENABLE_THINKING = True
-
-# Generation parameters
 MAX_NEW_TOKENS = 1024 if ENABLE_THINKING else 256
-REPETITION_PENALTY = 1.0  # 1.0 = disabled (>1.0 hurts ASR by forcing hallucination)
 
 
 # ---------------------------------------------------------------------------
 # Model setup
 # ---------------------------------------------------------------------------
-def load_pipeline(device="cuda", lora_path=None, **kwargs):
-    print(f"Loading model from {MODEL_PATH}...", flush=True)
-    local_files = os.path.isdir(MODEL_PATH)
-    config = AutoConfig.from_pretrained(MODEL_PATH, trust_remote_code=True, local_files_only=local_files)
+def load_pipeline(model_id, device="cuda", lora_path=None, lora_scale=1.0):
+    """Load model from HuggingFace Hub or local path.
+
+    The published models (bosonai/higgs-audio-v3-8b-stt) bundle all necessary
+    code via trust_remote_code=True -- no external library needed.
+    """
+    print(f"Loading model from {model_id}...", flush=True)
+    local_files = os.path.isdir(model_id)
+
+    config = AutoConfig.from_pretrained(
+        model_id, trust_remote_code=True, local_files_only=local_files
+    )
     model = AutoModel.from_pretrained(
-        MODEL_PATH, torch_dtype=torch.bfloat16, trust_remote_code=True,
+        model_id, torch_dtype=torch.bfloat16, trust_remote_code=True,
         attn_implementation="eager", device_map=device, local_files_only=local_files,
     )
 
@@ -100,7 +85,6 @@ def load_pipeline(device="cuda", lora_path=None, **kwargs):
         from peft import PeftModel
         model = PeftModel.from_pretrained(model, lora_path)
 
-        lora_scale = kwargs.get("lora_scale", 1.0)
         if lora_scale != 1.0:
             print(f"Scaling LoRA weights by {lora_scale}...", flush=True)
             scaled = 0
@@ -116,12 +100,25 @@ def load_pipeline(device="cuda", lora_path=None, **kwargs):
     model = model.eval()
     dev = next(model.parameters()).device
 
-    tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH, local_files_only=local_files)
+    tokenizer = AutoTokenizer.from_pretrained(model_id, local_files_only=local_files)
     model.audio_out_bos_token_id = tokenizer.convert_tokens_to_ids("<|audio_out_bos|>")
     model.audio_eos_token_id = tokenizer.convert_tokens_to_ids("<|audio_eos|>")
 
-    whisper_local = os.path.isdir(WHISPER_PATH)
-    whisper_proc = WhisperProcessor.from_pretrained(WHISPER_PATH, local_files_only=whisper_local)
+    whisper_proc = WhisperProcessor.from_pretrained("openai/whisper-large-v3")
+
+    # Import collator from the model's bundled code (loaded via trust_remote_code)
+    model_module = type(model)
+    collator_module = sys.modules.get(
+        model_module.__module__.rsplit(".", 1)[0] + ".higgs_audio_collator"
+    )
+    if collator_module is None:
+        # Fallback: try importing from boson_multimodal if available
+        boson_path = os.environ.get("BOSON_PATH")
+        if boson_path:
+            sys.path.insert(0, boson_path)
+        from boson_multimodal.data_collator.higgs_audio_collator import HiggsAudioSampleCollator
+    else:
+        HiggsAudioSampleCollator = collator_module.HiggsAudioSampleCollator
 
     collator = HiggsAudioSampleCollator(
         whisper_processor=whisper_proc,
@@ -139,31 +136,55 @@ def load_pipeline(device="cuda", lora_path=None, **kwargs):
         encoder_padding_method=getattr(config, "encoder_padding_method", "max_length"),
     )
     print(f"Model loaded on {dev}. Params: {sum(p.numel() for p in model.parameters())/1e9:.2f}B", flush=True)
-    return {"model": model, "tokenizer": tokenizer, "collator": collator, "device": dev}
+    return {
+        "model": model, "tokenizer": tokenizer, "collator": collator,
+        "device": dev, "collator_module": collator_module,
+    }
 
 
-def transcribe(audio_np, pipeline):
-    model = pipeline["model"]
+def _build_sample(audio_np, pipeline):
+    """Build a ChatML sample for transcription."""
     tokenizer = pipeline["tokenizer"]
-    collator = pipeline["collator"]
-    device = pipeline["device"]
+    collator_module = pipeline.get("collator_module")
 
-    messages = [Message(role="user", content=[USER_PROMPT, AudioContent(audio_url="placeholder")])]
-    chatml = ChatMLSample(messages=messages)
-    prep_fn = partial(prepare_chatml_sample_qwen, enable_thinking=ENABLE_THINKING)
-    input_tokens, _, _, _ = prep_fn(chatml, tokenizer, add_generation_prompt=True)
+    # Try to use the bundled ChatMLDatasetSample
+    if collator_module and hasattr(collator_module, "ChatMLDatasetSample"):
+        ChatMLDatasetSample = collator_module.ChatMLDatasetSample
+    else:
+        from boson_multimodal.dataset.chatml_dataset import ChatMLDatasetSample
+
+    # Build input tokens using chat template
+    audio_token = "<|audio_in_bos|><|AUDIO|><|audio_in_eos|>"
+    messages = [{"role": "user", "content": f"{USER_PROMPT}\n{audio_token}"}]
+    text = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+    if ENABLE_THINKING:
+        text += "<think>\n"
+    input_ids = tokenizer.encode(text, add_special_tokens=False)
 
     sample = ChatMLDatasetSample(
-        input_ids=torch.LongTensor(input_tokens), label_ids=None,
-        audio_ids_concat=None, audio_ids_start=None,
+        input_ids=torch.LongTensor(input_ids),
+        label_ids=torch.LongTensor([-100] * len(input_ids)),
         audio_waveforms_concat=torch.tensor(audio_np, dtype=torch.float32),
         audio_waveforms_start=torch.tensor([0]),
         audio_sample_rate=torch.tensor([16000]),
         audio_speaker_indices=torch.tensor([0]),
     )
+    return sample
+
+
+def transcribe(audio_np, pipeline):
+    from dataclasses import asdict
+
+    model = pipeline["model"]
+    tokenizer = pipeline["tokenizer"]
+    collator = pipeline["collator"]
+    device = pipeline["device"]
+
+    sample = _build_sample(audio_np, pipeline)
 
     batch = asdict(collator([sample]))
-    batch = {k: v.to(device).contiguous() if isinstance(v, torch.Tensor) else v for k, v in batch.items()}
+    batch = {k: v.to(device).contiguous() if isinstance(v, torch.Tensor) else v
+             for k, v in batch.items()}
 
     gen_kwargs = {
         "max_new_tokens": MAX_NEW_TOKENS,
@@ -172,8 +193,6 @@ def transcribe(audio_np, pipeline):
         "stop_strings": ["<|im_end|>", "<|endoftext|>"],
         "tokenizer": tokenizer,
     }
-    if REPETITION_PENALTY > 1.0:
-        gen_kwargs["repetition_penalty"] = REPETITION_PENALTY
 
     with torch.inference_mode():
         outputs = model.generate(**batch, **gen_kwargs)
@@ -183,16 +202,12 @@ def transcribe(audio_np, pipeline):
     parts = full_text.split("assistant\n")
     hyp = parts[-1] if len(parts) > 1 else full_text
 
-    # Remove complete <think>...</think> blocks
+    # Remove <think>...</think> blocks
     hyp = re.sub(r"<think>.*?</think>", "", hyp, flags=re.DOTALL)
-    # Handle truncated thinking (</think> missing because max_new_tokens exhausted)
     if "<think>" in hyp:
         hyp = hyp[:hyp.index("<think>")].strip()
-    # Remove special tokens
     hyp = re.sub(r"<\|.*?\|>", "", hyp)
     hyp = hyp.strip()
-
-    # Post-processing: remove excessive word repetitions
     hyp = _fix_repetitions(hyp)
     return hyp
 
@@ -235,7 +250,6 @@ def evaluate_dataset(dataset_name, pipeline, max_samples=0, output_dir=None, ski
     print(f"Evaluating: {dataset_name}")
     print(f"{'='*60}", flush=True)
 
-    # LibriSpeech: evaluate clean and other SEPARATELY for proper leaderboard scoring
     if dataset_name == "librispeech":
         results = {}
         for split_name in ["test.clean", "test.other"]:
@@ -247,17 +261,11 @@ def evaluate_dataset(dataset_name, pipeline, max_samples=0, output_dir=None, ski
             if skip_samples > 0:
                 end = min(skip_samples + max_samples, len(ds)) if max_samples > 0 else len(ds)
                 ds = ds.select(range(skip_samples, end))
-                print(f"  Skipped {skip_samples}, using {len(ds)} samples", flush=True)
             elif max_samples > 0:
                 ds = ds.select(range(min(max_samples, len(ds))))
-                print(f"  Truncated to {len(ds)} samples", flush=True)
 
-            result = _evaluate_split(
-                f"librispeech_{label}", ds, pipeline,
-                output_dir=output_dir,
-            )
+            result = _evaluate_split(f"librispeech_{label}", ds, pipeline, output_dir=output_dir)
             results[f"librispeech_{label}"] = result
-
         return results
 
     ds = load_dataset(ESB_DATASET, dataset_name, split="test")
@@ -267,24 +275,19 @@ def evaluate_dataset(dataset_name, pipeline, max_samples=0, output_dir=None, ski
     if skip_samples > 0:
         end = min(skip_samples + max_samples, len(ds)) if max_samples > 0 else len(ds)
         ds = ds.select(range(skip_samples, end))
-        print(f"  Skipped {skip_samples}, using {len(ds)} samples", flush=True)
     elif max_samples > 0:
         ds = ds.select(range(min(max_samples, len(ds))))
-        print(f"  Truncated to {len(ds)} samples", flush=True)
 
     result = _evaluate_split(dataset_name, ds, pipeline, output_dir=output_dir)
     return {dataset_name: result}
 
 
 def _evaluate_split(split_name, ds, pipeline, output_dir=None):
-    """Evaluate a single dataset split. Returns result dict."""
+    """Evaluate a single dataset split."""
     import evaluate
-
     wer_metric = evaluate.load("wer")
-    references = []
-    predictions = []
-    raw_refs = []
-    raw_hyps = []
+    references, predictions = [], []
+    raw_refs, raw_hyps = [], []
     total_audio_time = 0.0
     total_infer_time = 0.0
 
@@ -305,8 +308,6 @@ def _evaluate_split(split_name, ds, pipeline, output_dir=None):
                 total_infer_time = ckpt.get("total_infer_time", 0.0)
                 if start_idx < len(ds):
                     print(f"  Resuming {split_name} from sample {start_idx}/{len(ds)}", flush=True)
-                else:
-                    print(f"  Checkpoint complete for {split_name}", flush=True)
             except Exception as e:
                 print(f"  Could not load checkpoint: {e}, starting fresh", flush=True)
                 start_idx = 0
@@ -334,7 +335,6 @@ def _evaluate_split(split_name, ds, pipeline, output_dir=None):
         infer_time = time.time() - t0
         total_infer_time += infer_time
 
-        # Apply official Whisper normalizer
         norm_ref = normalizer(ref_text)
         norm_hyp = normalizer(hyp)
 
@@ -353,7 +353,6 @@ def _evaluate_split(split_name, ds, pipeline, output_dir=None):
                 flush=True,
             )
 
-        # Save checkpoint every 100 samples
         if checkpoint_file is not None and (i + 1) % 100 == 0:
             try:
                 tmp = checkpoint_file.with_suffix(".tmp")
@@ -376,18 +375,14 @@ def _evaluate_split(split_name, ds, pipeline, output_dir=None):
 
     print(f"  FINAL {split_name}: WER={final_wer*100:.2f}% | RTFx={rtfx:.1f} | {len(references)} samples")
 
-    # Save ref/hyp pairs for error analysis
     if output_dir is not None:
         outputs_file = Path(output_dir) / f"outputs_{split_name}.json"
         outputs_file.write_text(json.dumps({
-            "references": references,
-            "predictions": predictions,
-            "raw_refs": raw_refs,
-            "raw_hyps": raw_hyps,
+            "references": references, "predictions": predictions,
+            "raw_refs": raw_refs, "raw_hyps": raw_hyps,
             "wer": round(final_wer * 100, 2),
         }, indent=2))
 
-    # Clean up checkpoint if completed
     if checkpoint_file is not None and checkpoint_file.exists():
         try:
             checkpoint_file.unlink()
@@ -405,20 +400,17 @@ def _evaluate_split(split_name, ds, pipeline, output_dir=None):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--datasets", default=",".join(LEADERBOARD_DATASETS),
-                        help="Comma-separated dataset names")
+    parser.add_argument("--model", default="bosonai/higgs-audio-v3-8b-stt",
+                        help="HuggingFace model ID or local path")
+    parser.add_argument("--datasets", default=",".join(LEADERBOARD_DATASETS))
     parser.add_argument("--max-samples", type=int, default=0, help="0 = all")
-    parser.add_argument("--skip-samples", type=int, default=0, help="Skip first N samples")
+    parser.add_argument("--skip-samples", type=int, default=0)
     parser.add_argument("--output", default="results/leaderboard_results.json")
-    parser.add_argument("--output-dir", default="results/leaderboard_outputs",
-                        help="Directory for ref/hyp outputs and checkpoints")
-    parser.add_argument("--no-thinking", action="store_true", help="Disable thinking mode")
-    parser.add_argument("--lora-path", default=None,
-                        help="Path to LoRA adapter weights")
-    parser.add_argument("--lora-scale", type=float, default=1.0,
-                        help="Scale factor for LoRA weights (0-1, lower = more conservative)")
-    parser.add_argument("--prompt", default=None,
-                        help="Override the default transcription prompt")
+    parser.add_argument("--output-dir", default="results/leaderboard_outputs")
+    parser.add_argument("--no-thinking", action="store_true")
+    parser.add_argument("--lora-path", default=None)
+    parser.add_argument("--lora-scale", type=float, default=1.0)
+    parser.add_argument("--prompt", default=None)
     args = parser.parse_args()
 
     sys.stdout.reconfigure(line_buffering=True)
@@ -429,20 +421,18 @@ def main():
         MAX_NEW_TOKENS = 256
     if args.prompt:
         USER_PROMPT = args.prompt
-        print(f"Using custom prompt: {USER_PROMPT}", flush=True)
 
     datasets_list = args.datasets.split(",")
-    output_dir = args.output_dir
-    Path(output_dir).mkdir(parents=True, exist_ok=True)
+    Path(args.output_dir).mkdir(parents=True, exist_ok=True)
 
-    pipeline = load_pipeline(lora_path=args.lora_path, lora_scale=args.lora_scale)
+    pipeline = load_pipeline(args.model, lora_path=args.lora_path, lora_scale=args.lora_scale)
 
     all_results = {}
     all_wers = []
 
     for ds_name in datasets_list:
         split_results = evaluate_dataset(ds_name, pipeline, args.max_samples,
-                                         output_dir=output_dir,
+                                         output_dir=args.output_dir,
                                          skip_samples=args.skip_samples)
         for split_name, result in split_results.items():
             all_results[split_name] = result
@@ -450,20 +440,13 @@ def main():
                 all_wers.append(result["wer"])
 
     avg_wer = round(sum(all_wers) / len(all_wers), 2) if all_wers else None
-    avg_rtfx = round(
-        sum(r["rtfx"] for r in all_results.values() if r.get("rtfx"))
-        / max(1, sum(1 for r in all_results.values() if r.get("rtfx"))),
-        1,
-    ) if all_wers else None
 
     summary = {
         "avg_wer": avg_wer,
-        "avg_rtfx": avg_rtfx,
         "per_dataset": all_results,
-        "model": MODEL_PATH,
+        "model": args.model,
         "prompt": USER_PROMPT,
         "thinking": ENABLE_THINKING,
-        "max_new_tokens": MAX_NEW_TOKENS,
         "normalizer": "EnglishTextNormalizer (Whisper)",
         "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S"),
     }
@@ -475,11 +458,9 @@ def main():
     print(f"LEADERBOARD RESULTS")
     print(f"{'='*60}")
     print(f"Average WER: {avg_wer}% (over {len(all_wers)} splits)")
-    print(f"Average RTFx: {avg_rtfx}")
-    print(f"\nPer-dataset:")
     for name, r in sorted(all_results.items()):
         if r["wer"] is not None:
-            print(f"  {name:>20}: {r['wer']:6.2f}% WER | RTFx {r['rtfx']} | {r['count']} samples")
+            print(f"  {name:>20}: {r['wer']:6.2f}% WER | {r['count']} samples")
     print(f"\nResults saved to {args.output}")
 
 

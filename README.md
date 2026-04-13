@@ -103,23 +103,18 @@ python model_soup.py --results-dir results --top-k 5
 
 ### Recipe C: ASR LoRA Fine-Tuning (Appendix D)
 
-Fine-tunes the Qwen3-8B decoder of HiggsAudio3 using LoRA while keeping the Whisper-Large-v3 encoder frozen. Requires the `boson-multimodal` model library:
+Fine-tunes the Qwen3-8B decoder of HiggsAudio3 using LoRA while keeping the Whisper-Large-v3 encoder frozen.
 
-```bash
-# Install the HiggsAudio3 model library (required for ASR)
-git clone https://github.com/bosonai/boson-multimodal-ref.git
-export BOSON_PATH=$(pwd)/boson-multimodal-ref
-```
+**Evaluation** uses the published merged models on HuggingFace ([bosonai/higgs-audio-v3-8b-stt](https://huggingface.co/bosonai/higgs-audio-v3-8b-stt)) which bundle all necessary code -- no external library needed.
+
+**Training** requires the pre-trained base checkpoint (before LoRA) which is not publicly available. The training script (`asr/train.py`) and config are provided for methodology transparency. Contact the authors for base model access.
 
 ```bash
 cd asr/
 
-# Set model paths (or use HuggingFace hub IDs; defaults work if models are on HF)
+# Training (requires base model access + boson-multimodal library)
 export BOSON_PATH=/path/to/boson-multimodal-ref
-export MODEL_PATH=bosonai/higgs-audio-understanding-v3-8b   # default
-export WHISPER_PATH=openai/whisper-large-v3                  # default
-
-# Reproduce the best result (idea-0524ba, 5.30% WER)
+export MODEL_PATH=/path/to/higgs-audio-v3-8b-base
 python train.py \
   --datasets ami_train:10000,earnings22_train:5000,librispeech_train:3000,spgispeech_train:6000,tedlium_train:3000,voxpopuli_train:4000 \
   --output-dir checkpoints/8b_lora_best \
@@ -163,22 +158,23 @@ python evaluation/eval_e2e_tta.py \
 
 ### ASR Evaluation (Open ASR Leaderboard)
 
-Evaluates on all 8 ESB benchmark datasets using the official Whisper text normalizer:
+Evaluates on all 8 ESB benchmark datasets using the official Whisper text normalizer.
+No external library needed -- the HuggingFace model bundles all code.
 
 ```bash
 cd asr/
 
-# Evaluate base model
-python eval.py --output results/base_results.json
+# Evaluate the published 8B model (LoRA already merged, 5.30% WER)
+python eval.py --model bosonai/higgs-audio-v3-8b-stt
 
-# Evaluate with LoRA adapter
-python eval.py --lora-path checkpoints/8b_lora_best/best --output results/lora_results.json
+# Evaluate the published 1.7B model (5.36% WER)
+python eval.py --model bosonai/higgs-audio-v3-stt
 
-# Quick 500-sample evaluation (for iteration)
-python eval.py --lora-path checkpoints/8b_lora_best/best --max-samples 500
+# Quick 500-sample evaluation
+python eval.py --model bosonai/higgs-audio-v3-8b-stt --max-samples 500
 
 # Evaluate specific datasets
-python eval.py --datasets ami,earnings22 --lora-path checkpoints/8b_lora_best/best
+python eval.py --model bosonai/higgs-audio-v3-8b-stt --datasets ami,earnings22
 ```
 
 ## Pre-trained Models
