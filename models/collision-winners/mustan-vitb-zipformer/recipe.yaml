@@ -1,0 +1,84 @@
+idea_id: idea-495
+title: MUSTAN Multi-Scale Temporal Attention
+hypothesis: '[Source: MUSTAN: Multi-scale Temporal Context as Attention for Robust Video Foreground Segmentation] MUSTAN explicitly
+  targets OOD generalization by favoring motion cues over spatial cues, which is the exact solution needed for the Nexar-to-Real
+  domain shift. By using a multi-scale temporal architecture, the model is forced to rely on temporal context (motion) rather
+  than static background features that do not transfer.'
+config:
+  backbone:
+    name: dinov2_vitb14
+    freeze: false
+    output_dim: 768
+    input_resolution: 224
+    extraction_mode: cls_token
+  temporal_encoder:
+    type: zipformer_temporal
+    num_stacks: 4
+    stack_layers:
+    - 2
+    - 3
+    - 3
+    - 2
+    stack_dims:
+    - 384
+    - 768
+    - 768
+    - 384
+    num_heads:
+    - 6
+    - 12
+    - 12
+    - 6
+    dropout: 0.4
+    input_proj_dim: 512
+    use_biasnorm: true
+    activation: swooshr
+    ff_activation: swooshl
+    use_bypass: true
+    cnn_kernel_size: 15
+  heads:
+    classification:
+      type: binary
+      pooling: attention_pool
+      hidden_dim: 256
+      dropout: 0.3
+    regression:
+      type: risk_score
+      output_range:
+      - 0
+      - 100
+      pooling: per_frame
+      hidden_dim: 256
+      dropout: 0.2
+  loss:
+    classification:
+      type: binary_cross_entropy
+      weight: 1.0
+      pos_weight: 2.0
+    regression:
+      type: huber
+      delta: 10.0
+      weight: 0.5
+  optimizer:
+    type: adamw
+    lr: 0.0002
+    head_lr: 0.001
+    weight_decay: 0.01
+    betas:
+    - 0.9
+    - 0.98
+    warmup_steps: 2000
+    scheduler: cosine_with_warmup
+    max_epochs: 8
+    gradient_clip: 1.0
+  training:
+    gradient_checkpointing: true
+    gradient_accumulation_steps: 4
+    mixed_precision: bf16
+  data:
+    frame_sampling:
+      fps: 5
+      context_seconds: 4.0
+      max_frames: 20
+    batch_size: 16
+    num_workers: 1

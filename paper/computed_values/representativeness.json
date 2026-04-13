@@ -1,0 +1,214 @@
+{
+  "n_total": 3199,
+  "n_attributed": 688,
+  "n_unattributed": 2511,
+  "fraction_attributed": 0.2151,
+  "tests": [
+    {
+      "test": "chi-squared",
+      "dimension": "backbone",
+      "chi2": 37.731687006347215,
+      "p_value": 3.4076233773952626e-06,
+      "dof": 7,
+      "cramers_v": 0.1086,
+      "n_attributed": 688,
+      "n_unattributed": 2511,
+      "proportions_attributed": {
+        "DINOv2": 0.016,
+        "DINOv3-B": 0.2078,
+        "DINOv3-L": 0.0538,
+        "Multi-Backbone": 0.0218,
+        "Other": 0.0015,
+        "SigLIP2": 0.0363,
+        "VJepa2": 0.6628,
+        "_Other_merged": 0.0
+      },
+      "proportions_unattributed": {
+        "DINOv2": 0.055,
+        "DINOv3-B": 0.1876,
+        "DINOv3-L": 0.0693,
+        "Multi-Backbone": 0.0115,
+        "Other": 0.01,
+        "SigLIP2": 0.0191,
+        "VJepa2": 0.6464,
+        "_Other_merged": 0.0012
+      },
+      "significant_at_005": true,
+      "bonferroni_significant": true
+    },
+    {
+      "test": "chi-squared",
+      "dimension": "encoder",
+      "chi2": 61.185393113414705,
+      "p_value": 1.6343587596346454e-12,
+      "dof": 4,
+      "cramers_v": 0.1383,
+      "n_attributed": 688,
+      "n_unattributed": 2511,
+      "proportions_attributed": {
+        "BiMamba": 0.1541,
+        "Hybrid R-M": 0.0451,
+        "Retention": 0.1483,
+        "Zipformer": 0.6526,
+        "_Other_merged": 0.0
+      },
+      "proportions_unattributed": {
+        "BiMamba": 0.0844,
+        "Hybrid R-M": 0.0267,
+        "Retention": 0.0948,
+        "Zipformer": 0.7937,
+        "_Other_merged": 0.0004
+      },
+      "significant_at_005": true,
+      "bonferroni_significant": true
+    },
+    {
+      "test": "KS",
+      "dimension": "average_precision",
+      "ks_statistic": 0.12486555151694978,
+      "p_value": 7.526837497923383e-05,
+      "n_attributed": 544,
+      "n_unattributed": 793,
+      "mean_attributed": 0.5898954336663079,
+      "mean_unattributed": 0.5252813910994497,
+      "median_attributed": 0.7680604382121345,
+      "median_unattributed": 0.6903174706953216,
+      "std_attributed": 0.31423275759452013,
+      "std_unattributed": 0.32724773275568475,
+      "significant_at_005": true,
+      "bonferroni_significant": true
+    },
+    {
+      "test": "KS",
+      "dimension": "temporal_position",
+      "ks_statistic": 0.5917960971724413,
+      "p_value": 1.4487266447307843e-177,
+      "n_attributed": 688,
+      "n_unattributed": 2511,
+      "mean_attributed": 2291.9622093023254,
+      "mean_unattributed": 1409.132218239745,
+      "median_attributed": 2288.5,
+      "median_unattributed": 1255.0,
+      "std_attributed": 447.9487145839851,
+      "std_unattributed": 929.441921791293,
+      "significant_at_005": true,
+      "temporal_characterization": {
+        "attributed_quartile_counts": [
+          0,
+          50,
+          339,
+          299
+        ],
+        "unattributed_quartile_counts": [
+          800,
+          750,
+          461,
+          500
+        ],
+        "attributed_quartile_fracs": [
+          0.0,
+          0.0727,
+          0.4927,
+          0.4346
+        ],
+        "unattributed_quartile_fracs": [
+          0.3186,
+          0.2987,
+          0.1836,
+          0.1991
+        ],
+        "note": "Quartiles Q1-Q4 of campaign timeline (early to late)"
+      },
+      "bonferroni_significant": true
+    }
+  ],
+  "stratified_tests": [
+    {
+      "test": "chi-squared",
+      "dimension": "backbone_stratified",
+      "chi2": 16.938753126943872,
+      "p_value": 0.009510990909807603,
+      "dof": 6,
+      "cramers_v": 0.1029,
+      "n_attributed": 638,
+      "n_unattributed": 961,
+      "proportions_attributed": {
+        "DINOv2": 0.0094,
+        "DINOv3-B": 0.1959,
+        "DINOv3-L": 0.0188,
+        "Multi-Backbone": 0.0235,
+        "SigLIP2": 0.0361,
+        "VJepa2": 0.7147,
+        "_Other_merged": 0.0016
+      },
+      "proportions_unattributed": {
+        "DINOv2": 0.0198,
+        "DINOv3-B": 0.2653,
+        "DINOv3-L": 0.0166,
+        "Multi-Backbone": 0.0302,
+        "SigLIP2": 0.0281,
+        "VJepa2": 0.6348,
+        "_Other_merged": 0.0052
+      },
+      "significant_at_005": true,
+      "bonferroni_significant": true
+    },
+    {
+      "test": "chi-squared",
+      "dimension": "encoder_stratified",
+      "chi2": 2.5736596283029294,
+      "p_value": 0.46212607800608874,
+      "dof": 3,
+      "cramers_v": 0.0401,
+      "n_attributed": 638,
+      "n_unattributed": 961,
+      "proportions_attributed": {
+        "BiMamba": 0.1583,
+        "Hybrid R-M": 0.0486,
+        "Retention": 0.1254,
+        "Zipformer": 0.6677
+      },
+      "proportions_unattributed": {
+        "BiMamba": 0.1478,
+        "Hybrid R-M": 0.0635,
+        "Retention": 0.1103,
+        "Zipformer": 0.6785
+      },
+      "significant_at_005": false,
+      "bonferroni_significant": false
+    },
+    {
+      "test": "KS",
+      "dimension": "average_precision_stratified",
+      "ks_statistic": 0.11336723032842544,
+      "p_value": 0.0008959531124464975,
+      "n_attributed": 499,
+      "n_unattributed": 726,
+      "mean_attributed": 0.598750591386905,
+      "mean_unattributed": 0.5406952754875529,
+      "median_attributed": 0.7764133443267354,
+      "median_unattributed": 0.7386060814373168,
+      "std_attributed": 0.3134688752302441,
+      "std_unattributed": 0.32817339302154075,
+      "significant_at_005": true,
+      "bonferroni_significant": true
+    }
+  ],
+  "stratified_summary": {
+    "temporal_window": "second_half (experiments 1600-3199)",
+    "n_attributed_in_window": 638,
+    "n_unattributed_in_window": 961,
+    "n_tests": 3,
+    "n_significant_bonferroni": 2,
+    "max_effect_size": 0.1134,
+    "verdict": "DISTINGUISHABLE"
+  },
+  "summary": {
+    "n_tests": 4,
+    "n_significant_nominal": 4,
+    "n_significant_bonferroni": 4,
+    "max_effect_size": 0.5918,
+    "verdict": "DISTINGUISHABLE",
+    "interpretation": "4/4 tests significant after Bonferroni correction with max effect size 0.5918. The attributed subset shows meaningful differences from the unattributed population \u2014 see individual test details."
+  }
+}

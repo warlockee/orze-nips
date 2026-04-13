@@ -1,0 +1,17 @@
+{
+  "n_evaluated": 179,
+  "n_skipped_zipformer": 102,
+  "n_total_with_ckpt": 281,
+  "max_mAP": 0.6743038049719738,
+  "mean_mAP": 0.6315139517457399,
+  "std_mAP": 0.019557979564731643,
+  "median_mAP": 0.6344769282177019,
+  "p95_mAP": 0.6595633513319689,
+  "max_mAP_non_vjepa2": 0.6743038049719738,
+  "val_comp_spearman_rho": 0.3331765022180401,
+  "best_config": {
+    "idea_id": "smac-baseline-1038",
+    "backbone": "multi:dinov3_vitb16+siglip2_vit_b16",
+    "encoder": "hybrid_retention_mamba"
+  }
+}

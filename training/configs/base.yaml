@@ -1,0 +1,44 @@
+# --- Base config for Nexar Collision Detection ---
+
+# Data
+feature_dir: features/nexar
+test_feature_dir: features/nexar_test
+backbone: dinov3_vitb16
+max_seq_len: 64
+truncation: end  # "end" keeps last N frames (collision events), "uniform" downsamples, "start" keeps first N
+
+# Multi-backbone fusion (empty = single backbone mode)
+fusion_backbones: []
+
+# Model
+model:
+  type: transformer
+  hidden_dim: 256
+  num_layers: 4
+  num_heads: 4
+  dropout: 0.3
+  pool: cls
+
+# Training
+training:
+  epochs: 60
+  batch_size: 64
+  lr: 3.0e-4
+  weight_decay: 1.0e-2
+  warmup_epochs: 5
+  label_smoothing: 0.05
+  pos_weight: 2.8
+  optimizer: adamw
+  scheduler: cosine
+
+# Augmentation
+augmentation:
+  temporal_crop: false
+  temporal_crop_ratio: 0.8
+  feature_dropout: 0.1
+
+# Evaluation
+eval:
+  val_ratio: 0.15
+  num_folds: 1
+  seed: 42

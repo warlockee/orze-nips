@@ -1,0 +1,30 @@
+{
+  "status": "COMPLETED",
+  "idea_id": "idea-495",
+  "idea_title": "MUSTAN Multi-Scale Temporal Attention",
+  "epochs": 8,
+  "best_val_metric": 0.9030508069388009,
+  "best_metric_name": "mAP_1000ms",
+  "test_metrics": {
+    "auc_roc": 0.9174825174825175,
+    "average_precision": 0.9214894547987523,
+    "mAP_500ms": 0.9214894547987525,
+    "mAP_1000ms": 0.9214894547987525,
+    "mAP_1500ms": 0.9214894547987525,
+    "FPR@0.3": 0.6103896103896104,
+    "FPR@0.5": 0.4805194805194805,
+    "FPR@0.7": 0.38961038961038963,
+    "FPR@0.9": 0.2597402597402597,
+    "accuracy": 0.7112676056338029
+  },
+  "training_log_summary": {
+    "final_train_loss": 12.928495370548934,
+    "total_epochs": 8,
+    "max_epochs": 8,
+    "early_stopped": false,
+    "effective_batch_size": 32,
+    "grad_accumulation_steps": 4,
+    "end_to_end": true
+  },
+  "timestamp": "2026-02-15T20:16:15.365367"
+}

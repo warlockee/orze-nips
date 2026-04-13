@@ -1,0 +1,84 @@
+idea_id: idea-192
+title: nexvitad-bottleneck-zipformer
+hypothesis: '[Source: NexViTAD: Few-shot Unsupervised Cross-Domain Defect Detection via Vision Foundation Models...] This
+  paper explicitly tackles domain shift in anomaly detection using shared subspace projection. We approximate this by using
+  a ''bottleneck'' architecture in the temporal encoder (wide-narrow-wide) to force the model to learn robust, domain-invariant
+  collision features rather than memorizing spatial noise from the source domain.'
+config:
+  backbone:
+    name: dinov2_vitb14
+    freeze: false
+    output_dim: 768
+    input_resolution: 224
+    extraction_mode: cls_token
+  temporal_encoder:
+    type: zipformer_temporal
+    num_stacks: 4
+    stack_layers:
+    - 2
+    - 4
+    - 4
+    - 2
+    stack_dims:
+    - 512
+    - 256
+    - 256
+    - 512
+    num_heads:
+    - 8
+    - 4
+    - 4
+    - 8
+    dropout: 0.4
+    input_proj_dim: 512
+    use_biasnorm: true
+    activation: swooshr
+    ff_activation: swooshl
+    use_bypass: true
+    cnn_kernel_size: 15
+  heads:
+    classification:
+      type: binary
+      pooling: attention_pool
+      hidden_dim: 256
+      dropout: 0.3
+    regression:
+      type: risk_score
+      output_range:
+      - 0
+      - 100
+      pooling: per_frame
+      hidden_dim: 256
+      dropout: 0.2
+  loss:
+    classification:
+      type: binary_cross_entropy
+      weight: 1.0
+      pos_weight: 2.0
+    regression:
+      type: huber
+      delta: 10.0
+      weight: 0.5
+  optimizer:
+    type: adamw
+    lr: 2.0e-05
+    head_lr: 0.0001
+    weight_decay: 0.01
+    betas:
+    - 0.9
+    - 0.98
+    warmup_steps: 2000
+    scheduler: cosine_with_warmup
+    max_epochs: 25
+    gradient_clip: 1.0
+  training:
+    gradient_checkpointing: true
+    gradient_accumulation_steps: 4
+    mixed_precision: bf16
+  data:
+    frame_sampling:
+      fps: 5
+      context_seconds: 4.0
+      max_frames: 20
+    batch_size: 16
+    num_workers: 1

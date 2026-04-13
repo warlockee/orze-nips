@@ -1,0 +1,398 @@
+{
+  "status": "COMPLETED",
+  "idea_id": "idea-270",
+  "idea_title": "TTC-Aware Geometric ViT-L",
+  "timestamp": "2026-02-15T15:36:30.200992",
+  "model_info": {
+    "total_params": 348554792,
+    "trainable_params": 348554792,
+    "total_params_M": 348.55,
+    "trainable_params_M": 348.55,
+    "backbone": "dinov2_vitl14",
+    "temporal_encoder": "zipformer_temporal"
+  },
+  "aggregate_metrics": {
+    "frame_level_mae": 26.210091508987826,
+    "frame_level_correlation": {
+      "pearson": 0.028950387269484287,
+      "spearman": 0.33530170972366957
+    },
+    "frame_level_risk_accuracy": {
+      "accuracy": 0.43333333333333335,
+      "per_level": {
+        "LOW": {
+          "count": 5,
+          "correct": 0,
+          "accuracy": 0.0
+        },
+        "MODERATE": {
+          "count": 76,
+          "correct": 38,
+          "accuracy": 0.5
+        },
+        "HIGH": {
+          "count": 8,
+          "correct": 1,
+          "accuracy": 0.125
+        },
+        "CRITICAL": {
+          "count": 1,
+          "correct": 0,
+          "accuracy": 0.0
+        }
+      }
+    },
+    "risk_score_distribution": {
+      "predicted": {
+        "mean": 55.56948058155912,
+        "std": 21.580230867107765,
+        "min": 0.0,
+        "max": 77.47774640732206,
+        "median": 56.73835917987236,
+        "q25": 53.35933588950795,
+        "q75": 72.20399668254765
+      },
+      "ground_truth": {
+        "mean": 40.111111111111114,
+        "std": 11.104998318519504,
+        "min": 20.0,
+        "max": 85.0,
+        "median": 35.0,
+        "q25": 35.0,
+        "q75": 45.0
+      },
+      "kl_divergence": 15.238275349338966
+    },
+    "collision_detection_accuracy": 0.782608695652174,
+    "collision_auc_roc": 0.7045454545454545,
+    "false_positive_rate": 0.45454545454545453,
+    "false_positive_count": 5,
+    "total_no_collision_videos": 11,
+    "true_positive_rate": 1.0,
+    "precision": 0.7058823529411765,
+    "recall": 1.0,
+    "f1_score": 0.8275862068965517,
+    "mean_video_mae": 25.826249732250744,
+    "std_video_mae": 6.788715640916014,
+    "mean_video_pearson": 0.233046928554936
+  },
+  "per_video_results": [
+    {
+      "video_id": "real_collision_1",
+      "status": "OK",
+      "is_collision": true,
+      "source": "annotated_report",
+      "num_gt_frames": 35,
+      "num_pred_frames": 35,
+      "collision_prob": 0.5809285668872795,
+      "collision_predicted": true,
+      "ttc_estimate": 7.532917499542236,
+      "frame_level_mae": 18.90609876063519,
+      "pearson_correlation": 0.1679498280680388,
+      "spearman_correlation": 0.4010606823977737,
+      "risk_level_accuracy": 0.6571428571428571,
+      "risk_level_per_level": {
+        "MODERATE": {
+          "count": 28,
+          "correct": 23,
+          "accuracy": 0.8214285714285714
+        },
+        "HIGH": {
+          "count": 7,
+          "correct": 0,
+          "accuracy": 0.0
+        }
+      },
+      "temporal_cross_correlation": 0.1679498280680388,
+      "temporal_dtw_distance": 18.906098760635185
+    },
+    {
+      "video_id": "no_collision_1",
+      "status": "OK",
+      "is_collision": false,
+      "source": "annotated_report",
+      "num_gt_frames": 20,
+      "num_pred_frames": 20,
+      "collision_prob": 0.4964307676522325,
+      "collision_predicted": false,
+      "ttc_estimate": 7.513315200805664,
+      "frame_level_mae": 23.523199071828266,
+      "pearson_correlation": 0.6234203875389863,
+      "spearman_correlation": 0.5179862308762702,
+      "risk_level_accuracy": 0.75,
+      "risk_level_per_level": {
+        "LOW": {
+          "count": 5,
+          "correct": 0,
+          "accuracy": 0.0
+        },
+        "MODERATE": {
+          "count": 15,
+          "correct": 15,
+          "accuracy": 1.0
+        }
+      },
+      "temporal_cross_correlation": 0.6234203875389862,
+      "temporal_dtw_distance": 23.523199071828262
+    },
+    {
+      "video_id": "real_collision_2",
+      "status": "OK",
+      "is_collision": true,
+      "source": "annotated_report",
+      "num_gt_frames": 35,
+      "num_pred_frames": 35,
+      "collision_prob": 0.7360498158907954,
+      "collision_predicted": true,
+      "ttc_estimate": 6.441635608673096,
+      "frame_level_mae": 35.04945136428878,
+      "pearson_correlation": -0.09222942994221713,
+      "spearman_correlation": 0.3525794609931363,
+      "risk_level_accuracy": 0.02857142857142857,
+      "risk_level_per_level": {
+        "MODERATE": {
+          "count": 33,
+          "correct": 0,
+          "accuracy": 0.0
+        },
+        "HIGH": {
+          "count": 1,
+          "correct": 1,
+          "accuracy": 1.0
+        },
+        "CRITICAL": {
+          "count": 1,
+          "correct": 0,
+          "accuracy": 0.0
+        }
+      },
+      "temporal_cross_correlation": -0.09222942994221714,
+      "temporal_dtw_distance": 35.04945136428877
+    },
+    {
+      "video_id": "demo_collision_1037513411170304000",
+      "status": "OK",
+      "is_collision": true,
+      "source": "filename_heuristic",
+      "num_gt_frames": 0,
+      "num_pred_frames": 18,
+      "collision_prob": 0.7267605361800293,
+      "collision_predicted": true,
+      "ttc_estimate": 6.405679702758789
+    },
+    {
+      "video_id": "demo_collision_1043285522723799040",
+      "status": "OK",
+      "is_collision": true,
+      "source": "filename_heuristic",
+      "num_gt_frames": 0,
+      "num_pred_frames": 18,
+      "collision_prob": 0.8060259998046871,
+      "collision_predicted": true,
+      "ttc_estimate": 5.490790367126465
+    },
+    {
+      "video_id": "demo_collision_1044954506858758144",
+      "status": "OK",
+      "is_collision": true,
+      "source": "filename_heuristic",
+      "num_gt_frames": 0,
+      "num_pred_frames": 18,
+      "collision_prob": 0.6871768109058047,
+      "collision_predicted": true,
+      "ttc_estimate": 6.46567440032959
+    },
+    {
+      "video_id": "demo_collision_1061735316794277888",
+      "status": "OK",
+      "is_collision": true,
+      "source": "filename_heuristic",
+      "num_gt_frames": 0,
+      "num_pred_frames": 18,
+      "collision_prob": 0.8033289057573281,
+      "collision_predicted": true,
+      "ttc_estimate": 5.274960994720459
+    },
+    {
+      "video_id": "demo_collision_1065579203623288832",
+      "status": "OK",
+      "is_collision": true,
+      "source": "filename_heuristic",
+      "num_gt_frames": 0,
+      "num_pred_frames": 17,
+      "collision_prob": 0.5342488882539433,
+      "collision_predicted": true,
+      "ttc_estimate": 7.2703471183776855
+    },
+    {
+      "video_id": "demo_collision_1068491509042675712",
+      "status": "OK",
+      "is_collision": true,
+      "source": "filename_heuristic",
+      "num_gt_frames": 0,
+      "num_pred_frames": 18,
+      "collision_prob": 0.532660352680697,
+      "collision_predicted": true,
+      "ttc_estimate": 7.286438465118408
+    },
+    {
+      "video_id": "demo_collision_1118947169680916480",
+      "status": "OK",
+      "is_collision": true,
+      "source": "filename_heuristic",
+      "num_gt_frames": 0,
+      "num_pred_frames": 18,
+      "collision_prob": 0.5333161610635537,
+      "collision_predicted": true,
+      "ttc_estimate": 7.052746295928955
+    },
+    {
+      "video_id": "demo_collision_1147991572130988032",
+      "status": "OK",
+      "is_collision": true,
+      "source": "filename_heuristic",
+      "num_gt_frames": 0,
+      "num_pred_frames": 18,
+      "collision_prob": 0.8810535621312685,
+      "collision_predicted": true,
+      "ttc_estimate": 4.931656837463379
+    },
+    {
+      "video_id": "demo_collision_1160948353316585473",
+      "status": "OK",
+      "is_collision": true,
+      "source": "filename_heuristic",
+      "num_gt_frames": 0,
+      "num_pred_frames": 18,
+      "collision_prob": 0.7462275550337449,
+      "collision_predicted": true,
+      "ttc_estimate": 5.740666389465332
+    },
+    {
+      "video_id": "demo_collision_1164614511513206784",
+      "status": "OK",
+      "is_collision": true,
+      "source": "filename_heuristic",
+      "num_gt_frames": 0,
+      "num_pred_frames": 18,
+      "collision_prob": 0.7832175854404757,
+      "collision_predicted": true,
+      "ttc_estimate": 5.767336368560791
+    },
+    {
+      "video_id": "demo_no_collision_1009527478106079232",
+      "status": "OK",
+      "is_collision": false,
+      "source": "filename_heuristic",
+      "num_gt_frames": 0,
+      "num_pred_frames": 18,
+      "collision_prob": 0.4752226032104019,
+      "collision_predicted": false,
+      "ttc_estimate": 7.4037041664123535
+    },
+    {
+      "video_id": "demo_no_collision_1027333616977477632",
+      "status": "OK",
+      "is_collision": false,
+      "source": "filename_heuristic",
+      "num_gt_frames": 0,
+      "num_pred_frames": 18,
+      "collision_prob": 0.3513105666090074,
+      "collision_predicted": false,
+      "ttc_estimate": 8.188016891479492
+    },
+    {
+      "video_id": "demo_no_collision_1035216427805736960",
+      "status": "OK",
+      "is_collision": false,
+      "source": "filename_heuristic",
+      "num_gt_frames": 0,
+      "num_pred_frames": 18,
+      "collision_prob": 0.3904884854624362,
+      "collision_predicted": false,
+      "ttc_estimate": 7.6650848388671875
+    },
+    {
+      "video_id": "demo_no_collision_1044575619100344320",
+      "status": "OK",
+      "is_collision": false,
+      "source": "filename_heuristic",
+      "num_gt_frames": 0,
+      "num_pred_frames": 20,
+      "collision_prob": 0.8324015490001142,
+      "collision_predicted": true,
+      "ttc_estimate": 5.947023868560791
+    },
+    {
+      "video_id": "demo_no_collision_1073604486154584064",
+      "status": "OK",
+      "is_collision": false,
+      "source": "filename_heuristic",
+      "num_gt_frames": 0,
+      "num_pred_frames": 18,
+      "collision_prob": 0.4138200594684921,
+      "collision_predicted": false,
+      "ttc_estimate": 7.787014961242676
+    },
+    {
+      "video_id": "demo_no_collision_1080154437735055360",
+      "status": "OK",
+      "is_collision": false,
+      "source": "filename_heuristic",
+      "num_gt_frames": 0,
+      "num_pred_frames": 65,
+      "collision_prob": 0.7246128502079962,
+      "collision_predicted": true,
+      "ttc_estimate": 6.940951251983643
+    },
+    {
+      "video_id": "demo_no_collision_1093246335731269632",
+      "status": "OK",
+      "is_collision": false,
+      "source": "filename_heuristic",
+      "num_gt_frames": 0,
+      "num_pred_frames": 18,
+      "collision_prob": 0.48799743412251567,
+      "collision_predicted": false,
+      "ttc_estimate": 7.378785133361816
+    },
+    {
+      "video_id": "demo_no_collision_1097831422409998336",
+      "status": "OK",
+      "is_collision": false,
+      "source": "filename_heuristic",
+      "num_gt_frames": 0,
+      "num_pred_frames": 129,
+      "collision_prob": 0.7382155510055436,
+      "collision_predicted": true,
+      "ttc_estimate": 6.758690443905917
+    },
+    {
+      "video_id": "demo_no_collision_1143899463153254400",
+      "status": "OK",
+      "is_collision": false,
+      "source": "filename_heuristic",
+      "num_gt_frames": 0,
+      "num_pred_frames": 18,
+      "collision_prob": 0.6499809406818713,
+      "collision_predicted": true,
+      "ttc_estimate": 6.735605239868164
+    },
+    {
+      "video_id": "demo_no_collision_1153075121263640576",
+      "status": "OK",
+      "is_collision": false,
+      "source": "filename_heuristic",
+      "num_gt_frames": 0,
+      "num_pred_frames": 18,
+      "collision_prob": 0.886464312866902,
+      "collision_predicted": true,
+      "ttc_estimate": 4.55815315246582
+    }
+  ],
+  "config_summary": {
+    "backbone": "dinov2_vitl14",
+    "temporal_type": "zipformer_temporal",
+    "sequence_length": 20
+  }
+}

@@ -1,0 +1,226 @@
+{
+  "status": "OK",
+  "n_experiments": 118,
+  "n_backbones": 3,
+  "n_encoders": 2,
+  "one_way_anova": {
+    "backbone": {
+      "f_statistic": 2.271411698963618,
+      "p_value": 0.1077764954784699,
+      "df_between": 2,
+      "df_within": 115,
+      "ssb": 0.06782210721019603,
+      "ssw": 1.7168931402288845,
+      "msb": 0.03391105360509802,
+      "msw": 0.014929505567207691,
+      "eta_squared": 0.03800164048999703,
+      "n_groups": 3,
+      "n_total": 118,
+      "groups_used": {
+        "siglip2_vit_b16": 40,
+        "dinov2_vitb14": 40,
+        "dinov3_vitb16": 38
+      },
+      "group_means": {
+        "siglip2_vit_b16": 0.8638103993594168,
+        "dinov2_vitb14": 0.846294251498718,
+        "dinov3_vitb16": 0.8061198927508695
+      }
+    },
+    "encoder": {
+      "f_statistic": 0.06407837852085793,
+      "p_value": 0.8006103553103452,
+      "df_between": 1,
+      "df_within": 116,
+      "ssb": 0.0009853320749627571,
+      "ssw": 1.783729915364118,
+      "msb": 0.0009853320749627571,
+      "msw": 0.015376982029001018,
+      "eta_squared": 0.0005520948377488383,
+      "n_groups": 2,
+      "n_total": 118,
+      "groups_used": {
+        "zipformer_temporal": 60,
+        "gru": 58
+      },
+      "group_means": {
+        "zipformer_temporal": 0.8421355374974807,
+        "gru": 0.83635533981051
+      }
+    },
+    "learning_rate": {
+      "f_statistic": 131.31725354692628,
+      "p_value": 1.1102230246251565e-16,
+      "df_between": 4,
+      "df_within": 113,
+      "ssb": 1.4687468728544621,
+      "ssw": 0.31596837458461874,
+      "msb": 0.36718671821361554,
+      "msw": 0.002796180306058573,
+      "eta_squared": 0.8229586624320001,
+      "n_groups": 5,
+      "n_total": 118,
+      "groups_used": {
+        "1e-03": 24,
+        "3e-04": 22,
+        "1e-04": 24,
+        "1e-05": 24,
+        "3e-05": 24
+      },
+      "group_means": {
+        "1e-03": 1.0,
+        "3e-04": 0.9516634854135617,
+        "1e-04": 0.7708566680283537,
+        "1e-05": 0.7465300481469329,
+        "3e-05": 0.7367860038147162
+      }
+    },
+    "weight_decay": {
+      "f_statistic": 0.0004454426121532825,
+      "p_value": 0.9831977495218243,
+      "df_between": 1,
+      "df_within": 116,
+      "ssb": 6.853320422483665e-06,
+      "ssw": 1.7847083941186583,
+      "msb": 6.853320422483665e-06,
+      "msw": 0.01538541719067809,
+      "eta_squared": 3.840007772846461e-06,
+      "n_groups": 2,
+      "n_total": 118,
+      "groups_used": {
+        "1e-04": 59,
+        "1e-02": 59
+      },
+      "group_means": {
+        "1e-04": 0.8395354192030063,
+        "1e-02": 0.839053427557306
+      }
+    },
+    "backbone_x_encoder": {
+      "f_statistic": 1.0021055527766518,
+      "p_value": 0.4199508990009895,
+      "df_between": 5,
+      "df_within": 112,
+      "ssb": 0.07642359596876776,
+      "ssw": 1.7082916514703133,
+      "msb": 0.015284719193753552,
+      "msw": 0.01525260403098494,
+      "eta_squared": 0.042821170535988475,
+      "n_groups": 6,
+      "n_total": 118,
+      "groups_used": {
+        "siglip2_vit_b16+zipformer_temporal": 20,
+        "dinov2_vitb14+gru": 20,
+        "siglip2_vit_b16+gru": 20,
+        "dinov2_vitb14+zipformer_temporal": 20,
+        "dinov3_vitb16+zipformer_temporal": 20,
+        "dinov3_vitb16+gru": 18
+      },
+      "group_means": {
+        "siglip2_vit_b16+zipformer_temporal": 0.8749617597760546,
+        "dinov2_vitb14+gru": 0.8534163459844052,
+        "siglip2_vit_b16+gru": 0.8526590389427792,
+        "dinov2_vitb14+zipformer_temporal": 0.8391721570130308,
+        "dinov3_vitb16+zipformer_temporal": 0.8122726957033569,
+        "dinov3_vitb16+gru": 0.7992834450258834
+      }
+    }
+  },
+  "two_way_anova_backbone_encoder": {
+    "ss_a": 0.06782210721019603,
+    "ss_b": 0.0009853320749627571,
+    "ss_ab": 0.007616156683609043,
+    "ss_within": 1.7082916514703133,
+    "ss_total": 1.784715247439081,
+    "eta_sq_a": 0.03800164048999702,
+    "eta_sq_b": 0.0005520948377488382,
+    "eta_sq_ab": 0.004267435208242659,
+    "n_a_levels": 3,
+    "n_b_levels": 2,
+    "n_total": 118,
+    "a_levels": [
+      "dinov2_vitb14",
+      "dinov3_vitb16",
+      "siglip2_vit_b16"
+    ],
+    "b_levels": [
+      "gru",
+      "zipformer_temporal"
+    ]
+  },
+  "bootstrap_95ci": {
+    "backbone": {
+      "mean": 0.054264733669579915,
+      "std": 0.03626916678670685,
+      "ci_lower": 0.004172067189563717,
+      "ci_upper": 0.14075592814523244,
+      "ci_level": 0.95,
+      "n_bootstrap": 10000
+    },
+    "encoder": {
+      "mean": 0.009373653881783914,
+      "std": 0.012993033585967408,
+      "ci_lower": 8.2966825260771e-06,
+      "ci_upper": 0.04638269922423005,
+      "ci_level": 0.95,
+      "n_bootstrap": 10000
+    },
+    "learning_rate": {
+      "mean": 0.8293854266769511,
+      "std": 0.032157101279474375,
+      "ci_lower": 0.768044182410785,
+      "ci_upper": 0.8932669221275009,
+      "ci_level": 0.95,
+      "n_bootstrap": 10000
+    },
+    "weight_decay": {
+      "mean": 0.008476264979952446,
+      "std": 0.011624699024542747,
+      "ci_lower": 8.228000570209509e-06,
+      "ci_upper": 0.04122435144318485,
+      "ci_level": 0.95,
+      "n_bootstrap": 10000
+    },
+    "backbone_x_encoder": {
+      "mean": 0.0835620794000343,
+      "std": 0.0427490010225344,
+      "ci_lower": 0.018679079308689745,
+      "ci_upper": 0.182182380106789,
+      "ci_level": 0.95,
+      "n_bootstrap": 10000
+    }
+  },
+  "summary": {
+    "overall_mean_ap": 0.8392944233801561,
+    "overall_std_ap": 0.12298254139011713,
+    "per_backbone": {
+      "dinov3_vitb16": {
+        "mean": 0.8061198927508695,
+        "std": 0.10970070007117806,
+        "n": 38
+      },
+      "siglip2_vit_b16": {
+        "mean": 0.8638103993594168,
+        "std": 0.12153797578963163,
+        "n": 40
+      },
+      "dinov2_vitb14": {
+        "mean": 0.846294251498718,
+        "std": 0.1292993330623936,
+        "n": 40
+      }
+    },
+    "per_encoder": {
+      "gru": {
+        "mean": 0.83635533981051,
+        "std": 0.12391000095789181,
+        "n": 58
+      },
+      "zipformer_temporal": {
+        "mean": 0.8421355374974807,
+        "std": 0.1220120207053252,
+        "n": 60
+      }
+    }
+  }
+}

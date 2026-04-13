@@ -1,0 +1,196 @@
+{
+  "n_experiments": 31,
+  "timestamp": "2026-03-14T01:19:45",
+  "one_way_backbone_anova": {
+    "F": 3.1500112609796043,
+    "p": 0.030806050595806968,
+    "eta_squared": 0.3264256564877663,
+    "df_between": 4,
+    "df_within": 26,
+    "SS_between": 0.39470077542752885,
+    "SS_within": 0.8144590059278358,
+    "n_groups": 5,
+    "groups": {
+      "dinov2_vitb14": {
+        "n": 5,
+        "mean_ap": 0.6418981291578831,
+        "std_ap": 0.07312743357363978,
+        "min_ap": 0.5578128085565698,
+        "max_ap": 0.7672968918129524
+      },
+      "dinov3_vitb16": {
+        "n": 8,
+        "mean_ap": 0.5859794370684717,
+        "std_ap": 0.14402427755870334,
+        "min_ap": 0.3353163745881046,
+        "max_ap": 0.7101395934051906
+      },
+      "dinov3_vitl16": {
+        "n": 5,
+        "mean_ap": 0.6462200750967909,
+        "std_ap": 0.04975981195477617,
+        "min_ap": 0.565255899301663,
+        "max_ap": 0.7132406768265712
+      },
+      "siglip2_vit_b16": {
+        "n": 5,
+        "mean_ap": 0.8455433071301781,
+        "std_ap": 0.053506961631471436,
+        "min_ap": 0.7924710203335593,
+        "max_ap": 0.9402258468662651
+      },
+      "vjepa2_vitl": {
+        "n": 8,
+        "mean_ap": 0.4947290680413614,
+        "std_ap": 0.27273654615489673,
+        "min_ap": 0.05357569997339114,
+        "max_ap": 0.8520355186537204
+      }
+    }
+  },
+  "two_way_anova": {
+    "design": "5 backbones x 4 encoders, 17 filled cells",
+    "backbone_effect": {
+      "F": 4.608945897000612,
+      "p": 0.013894300792184011,
+      "eta_squared": 0.3264256564877663,
+      "SS": 0.39470077542752885,
+      "df": 4
+    },
+    "encoder_effect": {
+      "F": 2.935811361499435,
+      "p": 0.07002367103242446,
+      "eta_squared": 0.15594522680750325,
+      "SS": 0.18856269634997339,
+      "df": 3
+    },
+    "interaction_effect": {
+      "F": 1.6927247818745328,
+      "p": 0.18197462989219704,
+      "eta_squared": 0.2697438467885256,
+      "SS": 0.3261634108047686,
+      "df": 9
+    },
+    "residual": {
+      "SS": 0.2997328987730939,
+      "df": 14
+    },
+    "total_SS": 1.2091597813553647,
+    "encoder_groups": {
+      "bimamba": {
+        "n": 12,
+        "mean_ap": 0.5961162910621377,
+        "std_ap": 0.17073312150017725
+      },
+      "hybrid_temporal": {
+        "n": 5,
+        "mean_ap": 0.48781337149102066,
+        "std_ap": 0.24001925052344827
+      },
+      "retention_temporal": {
+        "n": 5,
+        "mean_ap": 0.7413563596096402,
+        "std_ap": 0.09868432196550392
+      },
+      "zipformer_temporal": {
+        "n": 9,
+        "mean_ap": 0.6683034943948852,
+        "std_ap": 0.1926598382760302
+      }
+    },
+    "combination_groups": {
+      "dinov2_vitb14+bimamba": {
+        "n": 3,
+        "mean_ap": 0.595542325413181,
+        "std_ap": 0.038209267869998516
+      },
+      "dinov2_vitb14+retention_temporal": {
+        "n": 1,
+        "mean_ap": 0.7672968918129524,
+        "std_ap": 0.0
+      },
+      "dinov2_vitb14+zipformer_temporal": {
+        "n": 1,
+        "mean_ap": 0.6555667777369198,
+        "std_ap": 0.0
+      },
+      "dinov3_vitb16+bimamba": {
+        "n": 1,
+        "mean_ap": 0.7028521101740794,
+        "std_ap": 0.0
+      },
+      "dinov3_vitb16+hybrid_temporal": {
+        "n": 2,
+        "mean_ap": 0.6720451326692023,
+        "std_ap": 0.03809446073598838
+      },
+      "dinov3_vitb16+retention_temporal": {
+        "n": 2,
+        "mean_ap": 0.6355321034464296,
+        "std_ap": 0.06414786996220867
+      },
+      "dinov3_vitb16+zipformer_temporal": {
+        "n": 3,
+        "mean_ap": 0.4566096380474766,
+        "std_ap": 0.15407494720393827
+      },
+      "dinov3_vitl16+bimamba": {
+        "n": 2,
+        "mean_ap": 0.6010151148033434,
+        "std_ap": 0.035759215501680375
+      },
+      "dinov3_vitl16+hybrid_temporal": {
+        "n": 1,
+        "mean_ap": 0.6358865321759041,
+        "std_ap": 0.0
+      },
+      "dinov3_vitl16+zipformer_temporal": {
+        "n": 2,
+        "mean_ap": 0.696591806850682,
+        "std_ap": 0.01664886997588927
+      },
+      "siglip2_vit_b16+bimamba": {
+        "n": 2,
+        "mean_ap": 0.8290089145261289,
+        "std_ap": 0.03653789419256959
+      },
+      "siglip2_vit_b16+retention_temporal": {
+        "n": 1,
+        "mean_ap": 0.8255820812791003,
+        "std_ap": 0.0
+      },
+      "siglip2_vit_b16+zipformer_temporal": {
+        "n": 2,
+        "mean_ap": 0.8720583126597663,
+        "std_ap": 0.06816753420649879
+      },
+      "vjepa2_vitl+bimamba": {
+        "n": 4,
+        "mean_ap": 0.4509670869182717,
+        "std_ap": 0.18438928123716913
+      },
+      "vjepa2_vitl+hybrid_temporal": {
+        "n": 2,
+        "mean_ap": 0.22954502997039739,
+        "std_ap": 0.17596932999700626
+      },
+      "vjepa2_vitl+retention_temporal": {
+        "n": 1,
+        "mean_ap": 0.8428386180632895,
+        "std_ap": 0.0
+      },
+      "vjepa2_vitl+zipformer_temporal": {
+        "n": 1,
+        "mean_ap": 0.8520355186537204,
+        "std_ap": 0.0
+      }
+    }
+  },
+  "nexar_comparison": {
+    "nexar_architecture_eta_squared": 0.7934,
+    "fedex_backbone_eta_squared_one_way": 0.3264256564877663,
+    "fedex_backbone_eta_squared_two_way": 0.3264256564877663,
+    "fedex_encoder_eta_squared_two_way": 0.15594522680750325,
+    "interpretation": "FedEx backbone eta\u00b2=0.3264 is much lower than Nexar's 0.7934, meaning backbone choice explains only 32.6% of AP variance on FedEx vs 79.3% on Nexar. Encoder choice explains 15.6% on FedEx."
+  }
+}

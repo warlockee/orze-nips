@@ -1,0 +1,376 @@
+{
+  "table3_reference": {
+    "LLM": {
+      "n": 3138,
+      "max_mAP": 0.727,
+      "space": "expanded"
+    },
+    "Random_exp": {
+      "n": 394,
+      "max_mAP": 0.737,
+      "space": "expanded"
+    },
+    "TPE_exp": {
+      "n": 394,
+      "max_mAP": 0.694,
+      "space": "expanded"
+    },
+    "SMAC_exp": {
+      "n": 179,
+      "max_mAP": 0.674,
+      "space": "expanded"
+    },
+    "Random_core": {
+      "n": 619,
+      "max_mAP": 0.702,
+      "space": "core"
+    },
+    "TPE_core": {
+      "n": 621,
+      "max_mAP": 0.696,
+      "space": "core"
+    },
+    "BOHB_core": {
+      "n": 512,
+      "max_mAP": 0.702,
+      "space": "core"
+    }
+  },
+  "expected_max_correction": {
+    "LLM": {
+      "n": 3138,
+      "observed_max": 0.727,
+      "null_expected_max": 0.7332,
+      "null_std_max": 0.005,
+      "null_p_value": 0.9035,
+      "gumbel_expected_max": 0.8158,
+      "excess_over_null": -0.0062,
+      "z_score": -1.26
+    },
+    "Random_exp": {
+      "n": 394,
+      "observed_max": 0.737,
+      "null_expected_max": 0.7162,
+      "null_std_max": 0.0127,
+      "null_p_value": 0.0913,
+      "gumbel_expected_max": 0.7848,
+      "excess_over_null": 0.0208,
+      "z_score": 1.64
+    },
+    "TPE_exp": {
+      "n": 394,
+      "observed_max": 0.694,
+      "null_expected_max": 0.7163,
+      "null_std_max": 0.0127,
+      "null_p_value": 0.9687,
+      "gumbel_expected_max": 0.7848,
+      "excess_over_null": -0.0223,
+      "z_score": -1.75
+    },
+    "SMAC_exp": {
+      "n": 179,
+      "observed_max": 0.674,
+      "null_expected_max": 0.7064,
+      "null_std_max": 0.0149,
+      "null_p_value": 0.994,
+      "gumbel_expected_max": 0.7715,
+      "excess_over_null": -0.0324,
+      "z_score": -2.17
+    },
+    "Random_core": {
+      "n": 619,
+      "observed_max": 0.702,
+      "null_expected_max": 0.7211,
+      "null_std_max": 0.0111,
+      "null_p_value": 0.9605,
+      "gumbel_expected_max": 0.7919,
+      "excess_over_null": -0.0191,
+      "z_score": -1.72
+    },
+    "TPE_core": {
+      "n": 621,
+      "observed_max": 0.696,
+      "null_expected_max": 0.7209,
+      "null_std_max": 0.0112,
+      "null_p_value": 0.9938,
+      "gumbel_expected_max": 0.792,
+      "excess_over_null": -0.0249,
+      "z_score": -2.23
+    },
+    "BOHB_core": {
+      "n": 512,
+      "observed_max": 0.702,
+      "null_expected_max": 0.7189,
+      "null_std_max": 0.012,
+      "null_p_value": 0.9243,
+      "gumbel_expected_max": 0.7889,
+      "excess_over_null": -0.0169,
+      "z_score": -1.41
+    }
+  },
+  "topk_enrichment": {
+    "top_10": {
+      "k": 10,
+      "by_policy": {
+        "LLM": 0.4,
+        "Random_exp": 0.3,
+        "BOHB_core": 0.2,
+        "Random_core": 0.1
+      },
+      "by_space": {
+        "expanded": 0.7,
+        "core": 0.3
+      },
+      "threshold_mAP": 0.6969
+    },
+    "top_25": {
+      "k": 25,
+      "by_policy": {
+        "Random_exp": 0.28,
+        "LLM": 0.24,
+        "BOHB_core": 0.24,
+        "TPE_core": 0.12,
+        "Random_core": 0.08,
+        "TPE_exp": 0.04
+      },
+      "by_space": {
+        "expanded": 0.56,
+        "core": 0.44
+      },
+      "threshold_mAP": 0.6895
+    },
+    "top_50": {
+      "k": 50,
+      "by_policy": {
+        "Random_exp": 0.26,
+        "LLM": 0.24,
+        "BOHB_core": 0.24,
+        "TPE_core": 0.18,
+        "Random_core": 0.06,
+        "TPE_exp": 0.02
+      },
+      "by_space": {
+        "expanded": 0.52,
+        "core": 0.48
+      },
+      "threshold_mAP": 0.6758
+    },
+    "top_100": {
+      "k": 100,
+      "by_policy": {
+        "LLM": 0.27,
+        "Random_exp": 0.21,
+        "BOHB_core": 0.2,
+        "TPE_core": 0.15,
+        "Random_core": 0.13,
+        "TPE_exp": 0.03,
+        "SMAC_exp": 0.01
+      },
+      "by_space": {
+        "expanded": 0.52,
+        "core": 0.48
+      },
+      "threshold_mAP": 0.6681
+    }
+  },
+  "sample_matched_comparison": {
+    "n=179 (vs SMAC)": {
+      "target_n": 179,
+      "llm_subsample_mean_max": 0.6809,
+      "llm_subsample_std_max": 0.0175,
+      "llm_subsample_p5": 0.6591,
+      "llm_subsample_p50": 0.6769,
+      "llm_subsample_p95": 0.727
+    },
+    "n=394 (vs Random)": {
+      "target_n": 394,
+      "llm_subsample_mean_max": 0.6922,
+      "llm_subsample_std_max": 0.0177,
+      "llm_subsample_p5": 0.6693,
+      "llm_subsample_p50": 0.6909,
+      "llm_subsample_p95": 0.727
+    },
+    "n=512 (vs BOHB)": {
+      "target_n": 512,
+      "llm_subsample_mean_max": 0.6964,
+      "llm_subsample_std_max": 0.0173,
+      "llm_subsample_p5": 0.6716,
+      "llm_subsample_p50": 0.6969,
+      "llm_subsample_p95": 0.727
+    },
+    "n=619 (vs Rand_core)": {
+      "target_n": 619,
+      "llm_subsample_mean_max": 0.6994,
+      "llm_subsample_std_max": 0.0167,
+      "llm_subsample_p5": 0.673,
+      "llm_subsample_p50": 0.6969,
+      "llm_subsample_p95": 0.727
+    },
+    "llm_394_vs_random_exp": {
+      "random_exp_max": 0.737,
+      "llm_mean_max_at_394": 0.6922,
+      "p_llm_exceeds_random": 0.0
+    },
+    "smac_bootstrap_max": {
+      "observed_max": 0.674,
+      "bootstrap_mean_max": 0.6698,
+      "bootstrap_std_max": 0.0042,
+      "bootstrap_95ci": [
+        0.663,
+        0.6743
+      ]
+    }
+  },
+  "analytical_expected_max": {
+    "LLM": {
+      "n": 3138,
+      "gumbel_factor": 3.4375,
+      "relative_advantage_vs_394": 0.6049
+    },
+    "Random_exp": {
+      "n": 394,
+      "gumbel_factor": 2.8327,
+      "relative_advantage_vs_394": 0.0
+    },
+    "TPE_exp": {
+      "n": 394,
+      "gumbel_factor": 2.8327,
+      "relative_advantage_vs_394": 0.0
+    },
+    "SMAC_exp": {
+      "n": 179,
+      "gumbel_factor": 2.5725,
+      "relative_advantage_vs_394": -0.2601
+    },
+    "Random_core": {
+      "n": 619,
+      "gumbel_factor": 2.9731,
+      "relative_advantage_vs_394": 0.1405
+    },
+    "TPE_core": {
+      "n": 621,
+      "gumbel_factor": 2.9741,
+      "relative_advantage_vs_394": 0.1415
+    },
+    "BOHB_core": {
+      "n": 512,
+      "gumbel_factor": 2.9148,
+      "relative_advantage_vs_394": 0.0821
+    },
+    "sigma_sensitivity": {
+      "advantage_in_sigma": 0.6049,
+      "mAP_advantage_by_sigma": {
+        "0.02": 0.0121,
+        "0.03": 0.0181,
+        "0.05": 0.0302,
+        "0.07": 0.0423
+      }
+    },
+    "observed_gap": -0.01,
+    "interpretation": "LLM max (0.727) < Random_exp max (0.737) despite 8x more samples. Under any expected-max correction, larger n should produce HIGHER max, so the LLM's shortfall is even more pronounced after correction. Random_exp's 0.737 from only 394 samples implies a genuinely better right tail in the expanded space (non-VJepa2 configs)."
+  },
+  "distribution_quality": {
+    "LLM": {
+      "n": 3136,
+      "mean": 0.582,
+      "std": 0.0534,
+      "median": 0.5931,
+      "p25": 0.5622,
+      "p75": 0.6175,
+      "p90": 0.6373,
+      "p95": 0.6484,
+      "max": 0.727,
+      "frac_above_0.65": 0.044,
+      "frac_above_0.68": 0.0045,
+      "frac_above_0.7": 0.0013,
+      "frac_above_0.72": 0.0006
+    },
+    "Random_exp": {
+      "n": 394,
+      "mean": 0.5842,
+      "std": 0.0533,
+      "median": 0.588,
+      "p25": 0.5467,
+      "p75": 0.6221,
+      "p90": 0.6483,
+      "p95": 0.6608,
+      "max": 0.737,
+      "frac_above_0.65": 0.0939,
+      "frac_above_0.68": 0.0228,
+      "frac_above_0.7": 0.0152,
+      "frac_above_0.72": 0.0051
+    },
+    "TPE_exp": {
+      "n": 394,
+      "mean": 0.5618,
+      "std": 0.0516,
+      "median": 0.5619,
+      "p25": 0.5291,
+      "p75": 0.595,
+      "p90": 0.6248,
+      "p95": 0.6494,
+      "max": 0.6935,
+      "frac_above_0.65": 0.0508,
+      "frac_above_0.68": 0.0051,
+      "frac_above_0.7": 0.0,
+      "frac_above_0.72": 0.0
+    },
+    "SMAC_exp": {
+      "n": 179,
+      "mean": 0.6315,
+      "std": 0.0196,
+      "median": 0.6345,
+      "p25": 0.6216,
+      "p75": 0.6423,
+      "p90": 0.6557,
+      "p95": 0.6596,
+      "max": 0.6743,
+      "frac_above_0.65": 0.1676,
+      "frac_above_0.68": 0.0,
+      "frac_above_0.7": 0.0,
+      "frac_above_0.72": 0.0
+    }
+  },
+  "reconstruction_sensitivity": {
+    "std_mult_0.5": {
+      "multiplier": 0.5,
+      "mean_max": 0.7196,
+      "std_max": 0.0049,
+      "p_exceed_random": 0.0
+    },
+    "std_mult_0.75": {
+      "multiplier": 0.75,
+      "mean_max": 0.7186,
+      "std_max": 0.0065,
+      "p_exceed_random": 0.0
+    },
+    "std_mult_1.0": {
+      "multiplier": 1.0,
+      "mean_max": 0.7158,
+      "std_max": 0.0075,
+      "p_exceed_random": 0.0
+    },
+    "std_mult_1.5": {
+      "multiplier": 1.5,
+      "mean_max": 0.7023,
+      "std_max": 0.0138,
+      "p_exceed_random": 0.0
+    },
+    "std_mult_2.0": {
+      "multiplier": 2.0,
+      "mean_max": 0.6616,
+      "std_max": 0.0295,
+      "p_exceed_random": 0.0
+    },
+    "assumption_free_findings": {
+      "order_statistics": "LLM (n=3138) should have ~0.6 sigma Gumbel advantage over Random (n=394). For any reasonable sigma, LLM should exceed Random. It does not.",
+      "smac_real_data": "SMAC (n=179, real data): max=0.674, mean=0.632, std=0.020. Tight distribution with low ceiling, confirming BO struggles with the saturated proxy.",
+      "raw_observation": "LLM max (0.727) < Random_exp max (0.737) with 8x more samples. This is a model-free observation that needs no reconstruction."
+    }
+  },
+  "summary": {
+    "key_finding": "Oracle-selection bias works AGAINST the LLM: with 8x more samples, it should achieve a higher max than Random_exp, but it does not (0.727 < 0.737). After expected-max correction, the LLM's shortfall is ~0.025 mAP, confirming that the expanded space quality (SSC) rather than optimizer effectiveness (WSO) determines the ceiling.",
+    "oracle_bias_direction": "favors_null_against_llm",
+    "corrected_comparison": "Even with order-statistics correction for n=3138 vs n=394, Random_exp outperforms LLM, confirming the space-quality thesis."
+  }
+}

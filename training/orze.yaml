@@ -1,0 +1,65 @@
+# Orze config — Nexar Collision Detection
+train_script: train.py
+ideas_file: ideas.md
+base_config: configs/base.yaml
+results_dir: results
+timeout: 600
+poll: 15
+stall_minutes: 10
+
+# Data leakage guardrails
+data_boundaries:
+  forbidden_in_training:
+    - <path_to>/solution.csv
+  watch_paths:
+    - <path_to>/features/nexar_test
+    - <path_to>/test
+auto_seal_eval: true
+
+report:
+  primary_metric: map
+  columns:
+    - key: map
+      label: mAP
+    - key: val_map
+      label: Val mAP
+    - key: test_map
+      label: Test mAP
+    - key: backbone
+    - key: model_type
+    - key: param_count
+    - key: training_time
+      label: Time (s)
+
+notifications:
+  enabled: true
+  heartbeat_interval: 1800
+  milestone_every: 50
+  on: [completed, failed, new_best]
+  channels:
+    - type: telegram
+      bot_token: "<your_bot_token>"
+      chat_id: "<your_chat_id>"
+      on: [new_best, heartbeat, milestone, stall, plateau, role_summary]
+
+roles:
+  professor:
+    mode: claude
+    model: claude-opus-4-6
+    rules_file: PROFESSOR_RULES.md
+    cycle_interval: 600
+    timeout: 1200
+  research:
+    mode: research
+    backend: anthropic
+    model: claude-opus-4-6
+    num_ideas: 5
+    cycle_interval: 300
+    rules_file: RESEARCH_RULES.md
+  research_gemini:
+    mode: research
+    backend: gemini
+    model: gemini-3.1-pro-preview
+    num_ideas: 5
+    cycle_interval: 300
+    rules_file: RESEARCH_RULES.md

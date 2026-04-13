@@ -1,0 +1,101 @@
+{
+  "balanced_anova": {
+    "F_statistic": 9.83,
+    "eta_squared": 0.4981,
+    "p_value": 3.07461833770617e-11,
+    "df_between": 10,
+    "df_within": 99,
+    "n_groups": 11,
+    "N": 110,
+    "n_per_group": 10,
+    "groups": {
+      "VJepa2+zipformer_temporal": {
+        "mean_ap": 0.8903,
+        "std_ap": 0.1971
+      },
+      "DINOv3+zipformer_temporal": {
+        "mean_ap": 0.7456,
+        "std_ap": 0.3211
+      },
+      "DINOv3+retention_temporal": {
+        "mean_ap": 0.5496,
+        "std_ap": 0.3803
+      },
+      "VJepa2+retention_temporal": {
+        "mean_ap": 0.8446,
+        "std_ap": 0.2631
+      },
+      "DINOv2+zipformer_temporal": {
+        "mean_ap": 0.6831,
+        "std_ap": 0.1584
+      },
+      "VJepa2+hybrid_retention_mamba": {
+        "mean_ap": 0.4928,
+        "std_ap": 0.3914
+      },
+      "VJepa2+bimamba_temporal": {
+        "mean_ap": 0.9459,
+        "std_ap": 0.0294
+      },
+      "DINOv3+bimamba_temporal": {
+        "mean_ap": 0.1396,
+        "std_ap": 0.0854
+      },
+      "DINOv3+hybrid_retention_mamba": {
+        "mean_ap": 0.2734,
+        "std_ap": 0.2747
+      },
+      "siglip2+retention_temporal": {
+        "mean_ap": 0.6384,
+        "std_ap": 0.1035
+      },
+      "siglip2+zipformer_temporal": {
+        "mean_ap": 0.7922,
+        "std_ap": 0.1586
+      }
+    }
+  },
+  "vjepa2_only_anova": {
+    "F_statistic": 24.45,
+    "eta_squared": 0.0348,
+    "p_value": 1.5543122344752192e-15,
+    "df_between": 3,
+    "df_within": 2035,
+    "n_groups": 4,
+    "N": 2039,
+    "groups": {
+      "retention_temporal": {
+        "count": 169,
+        "mean_ap": 0.8928,
+        "std_ap": 0.1883
+      },
+      "zipformer_temporal": {
+        "count": 1602,
+        "mean_ap": 0.8907,
+        "std_ap": 0.2075
+      },
+      "bimamba_temporal": {
+        "count": 200,
+        "mean_ap": 0.8619,
+        "std_ap": 0.2196
+      },
+      "hybrid_retention_mamba": {
+        "count": 68,
+        "mean_ap": 0.6656,
+        "std_ap": 0.3782
+      }
+    }
+  },
+  "random_permutation_r2": {
+    "n_experiments": 3004,
+    "n_permutations": 1000,
+    "n_failed_fits": 0,
+    "mean_r2": 0.8116,
+    "std_r2": 0.0923,
+    "median_r2": 0.822,
+    "min_r2": 0.4306,
+    "max_r2": 0.9927,
+    "percentile_5": 0.6337,
+    "percentile_95": 0.934
+  }
+}

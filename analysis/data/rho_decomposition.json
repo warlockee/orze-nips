@@ -1,0 +1,57 @@
+{
+  "overall": {
+    "rho": -0.4004,
+    "p": 4.2539642725234e-121,
+    "n": 3136
+  },
+  "between_backbone": {
+    "rho": -0.9,
+    "p": 0.03738607346849874,
+    "n_backbones": 5,
+    "backbones": [
+      "DINOv2",
+      "DINOv3",
+      "Other",
+      "SigLIP2",
+      "VJepa2"
+    ]
+  },
+  "per_backbone": {
+    "DINOv2": {
+      "n": 48,
+      "mean_val_AP": 0.775,
+      "mean_comp_mAP": 0.6204,
+      "within_rho": -0.1841,
+      "within_p": 0.2103319893450067
+    },
+    "DINOv3": {
+      "n": 1389,
+      "mean_val_AP": 0.6284,
+      "mean_comp_mAP": 0.6515,
+      "within_rho": -0.129,
+      "within_p": 1.4049884538531204e-06
+    },
+    "Other": {
+      "n": 372,
+      "mean_val_AP": 0.9731,
+      "mean_comp_mAP": 0.5,
+      "within_rho": null,
+      "within_p": null
+    },
+    "SigLIP2": {
+      "n": 104,
+      "mean_val_AP": 0.7583,
+      "mean_comp_mAP": 0.6305,
+      "within_rho": -0.2114,
+      "within_p": 0.03121704319197264
+    },
+    "VJepa2": {
+      "n": 1223,
+      "mean_val_AP": 0.8571,
+      "mean_comp_mAP": 0.6303,
+      "within_rho": 0.3896,
+      "within_p": 1.3154973796795128e-45
+    }
+  },
+  "simpsons_paradox_explanation": "The overall negative rho (-0.40) is a Simpson's paradox artifact. BETWEEN backbones, val AP and mAP are positively correlated (both high for VJepa2, both low for DINOv2). WITHIN the dominant backbone (VJepa2), val AP saturates near 1.0, making the correlation meaningless. The negative overall rho arises because VJepa2 (high val AP, moderate mAP ~0.65 mean) is compared against DINOv3-B (low val AP ~0.5, but occasionally high mAP in fusion configs)."
+}

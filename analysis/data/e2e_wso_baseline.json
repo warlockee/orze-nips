@@ -1,0 +1,15 @@
+{
+  "n_total": 100,
+  "n_random": 48,
+  "n_tpe": 52,
+  "random_mean": 0.8196521697727391,
+  "random_max": 1.0,
+  "random_median": 0.7837300909575295,
+  "tpe_mean": 0.8233076479629222,
+  "tpe_max": 1.0,
+  "tpe_median": 0.7929578086286433,
+  "n_saturated": 19,
+  "above_85": 26,
+  "above_90": 22,
+  "best_non_saturated": 0.961918794159241
+}

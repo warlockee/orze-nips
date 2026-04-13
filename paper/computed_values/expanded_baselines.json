@@ -1,0 +1,75 @@
+{
+  "n_trained": 1008,
+  "n_evaluated": 788,
+  "n_tpe_trained": 504,
+  "n_tpe_evaluated": 394,
+  "n_random_trained": 504,
+  "n_random_evaluated": 394,
+  "best_overall_mAP": 0.737,
+  "best_tpe_mAP": 0.6935,
+  "best_random_mAP": 0.737,
+  "best_non_vjepa2_mAP": 0.737,
+  "best_vjepa2_mAP": 0.689,
+  "vjepa2_gap": 0.048,
+  "mean_mAP": 0.5919,
+  "median_mAP": 0.6011,
+  "backbone_ranking": {
+    "dinov3_vitb16": {
+      "n": 130,
+      "best": 0.737,
+      "mean": 0.6204
+    },
+    "siglip2_vit_b16": {
+      "n": 121,
+      "best": 0.733,
+      "mean": 0.6218
+    },
+    "dinov3_vitl16": {
+      "n": 108,
+      "best": 0.733,
+      "mean": 0.5848
+    },
+    "dinov2_vitb14": {
+      "n": 109,
+      "best": 0.725,
+      "mean": 0.6151
+    },
+    "vjepa2_vitl": {
+      "n": 320,
+      "best": 0.689,
+      "mean": 0.5634
+    }
+  },
+  "encoder_ranking": {
+    "gru_temporal": {
+      "n": 182,
+      "best": 0.737,
+      "mean": 0.5769
+    },
+    "lstm_temporal": {
+      "n": 103,
+      "best": 0.736,
+      "mean": 0.5855
+    },
+    "hybrid_temporal": {
+      "n": 115,
+      "best": 0.733,
+      "mean": 0.5799
+    },
+    "bimamba": {
+      "n": 149,
+      "best": 0.733,
+      "mean": 0.6032
+    },
+    "zipformer_temporal": {
+      "n": 112,
+      "best": 0.725,
+      "mean": 0.5853
+    },
+    "retention_temporal": {
+      "n": 127,
+      "best": 0.71,
+      "mean": 0.6217
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "status": "COMPLETED",
+  "idea_id": "idea-270",
+  "idea_title": "TTC-Aware Geometric ViT-L",
+  "epochs": 6,
+  "best_val_metric": 0.9021112387616739,
+  "best_metric_name": "mAP_1000ms",
+  "test_metrics": {
+    "auc_roc": 0.877922077922078,
+    "average_precision": 0.8057195405899606,
+    "mAP_500ms": 0.8057195405899609,
+    "mAP_1000ms": 0.8057195405899609,
+    "mAP_1500ms": 0.8057195405899609,
+    "FPR@0.3": 0.6363636363636364,
+    "FPR@0.5": 0.36363636363636365,
+    "FPR@0.7": 0.2727272727272727,
+    "FPR@0.9": 0.1038961038961039,
+    "accuracy": 0.7816901408450704
+  },
+  "training_log_summary": {
+    "final_train_loss": 12.018792711014818,
+    "total_epochs": 6,
+    "max_epochs": 6,
+    "early_stopped": false,
+    "effective_batch_size": 32,
+    "grad_accumulation_steps": 4,
+    "end_to_end": true
+  },
+  "timestamp": "2026-02-15T15:33:11.866419"
+}

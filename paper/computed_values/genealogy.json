@@ -1,0 +1,247 @@
+{
+  "n_ideas_total": 42052,
+  "n_ideas_with_parents": 5175,
+  "n_roots": 72,
+  "max_depth": 3,
+  "mean_depth": 1.0628930817610063,
+  "depth_distribution": {
+    "0": 72,
+    "1": 4775,
+    "2": 398,
+    "3": 2
+  },
+  "branching_factor": {
+    "mean": 63.888888888888886,
+    "median": 3.0,
+    "std": 204.0534909294468,
+    "max": 1200,
+    "n_parents": 81
+  },
+  "depth_ap_correlation": {
+    "spearman_rho": -0.008756580854229328,
+    "p_value": 0.9279938886954062,
+    "n": 109
+  },
+  "depth_ap_summary": {
+    "0": {
+      "count": 52,
+      "mean_ap": 0.6890238540979083,
+      "std_ap": 0.26992744301375843,
+      "best_ap": 0.9245057778280362
+    },
+    "1": {
+      "count": 57,
+      "mean_ap": 0.7369826225793272,
+      "std_ap": 0.17789571494711626,
+      "best_ap": 0.8999184664796743
+    }
+  },
+  "champion_lineage": {
+    "idea_id": "idea-2ec818",
+    "ap": 0.9245057778280362,
+    "depth": 0,
+    "lineage": [
+      {
+        "idea_id": "idea-2ec818",
+        "title": "Isolate Focal Loss Impact with High Gamma on VJepa2"
+      }
+    ]
+  },
+  "top_10_lineages": {
+    "idea-2ec818": {
+      "ap": 0.9245057778280362,
+      "depth": 0,
+      "lineage": [
+        {
+          "idea_id": "idea-2ec818",
+          "title": "Isolate Focal Loss Impact with High Gamma on VJepa2"
+        }
+      ]
+    },
+    "idea-220eb6-ht-8": {
+      "ap": 0.9205753344470232,
+      "depth": 0,
+      "lineage": [
+        {
+          "idea_id": "idea-220eb6",
+          "title": "Refine High-Precision Champion (0fbe1e) with Cosine Scheduler"
+        }
+      ]
+    },
+    "idea-0fbe1e": {
+      "ap": 0.9202693153074217,
+      "depth": 0,
+      "lineage": [
+        {
+          "idea_id": "idea-0fbe1e",
+          "title": "Champion Refinement: VJepa2+Zipformer Focal \u03b3=3.0 with Gradient Clip 0.5 and Optimal LR"
+        }
+      ]
+    },
+    "idea-02d0b0": {
+      "ap": 0.9163091968125885,
+      "depth": 0,
+      "lineage": [
+        {
+          "idea_id": "idea-02d0b0",
+          "title": "Test Attention Pooling & Focal Loss on Top Performer"
+        }
+      ]
+    },
+    "idea-1e60f0-ht-6": {
+      "ap": 0.9162179332224651,
+      "depth": 0,
+      "lineage": [
+        {
+          "idea_id": "idea-1e60f0",
+          "title": "Refine Champion with True Attention Pooling"
+        }
+      ]
+    },
+    "idea-338f86": {
+      "ap": 0.9132446147493699,
+      "depth": 0,
+      "lineage": [
+        {
+          "idea_id": "idea-338f86",
+          "title": "VJepa2 + Retention Temporal with Strong Focal Loss for Precision"
+        }
+      ]
+    },
+    "idea-14f2f9": {
+      "ap": 0.9055013231270591,
+      "depth": 0,
+      "lineage": [
+        {
+          "idea_id": "idea-14f2f9",
+          "title": "Refine Champion: VJepa2+Zipformer \u03b3=3.0 with Higher Oversample and Stronger Regularization"
+        }
+      ]
+    },
+    "idea-0ab093": {
+      "ap": 0.9054196697190158,
+      "depth": 0,
+      "lineage": [
+        {
+          "idea_id": "idea-0ab093",
+          "title": "VJepa2 + Hybrid Retention-Mamba with Optimal Scheduler"
+        }
+      ]
+    },
+    "idea-2714f2": {
+      "ap": 0.9016478432286867,
+      "depth": 0,
+      "lineage": [
+        {
+          "idea_id": "idea-2714f2",
+          "title": "Refine Top AP: VJepa2 + BiMamba with High Gamma Focal Loss"
+        }
+      ]
+    },
+    "idea-434131-ht-1": {
+      "ap": 0.9009977439794165,
+      "depth": 0,
+      "lineage": [
+        {
+          "idea_id": "idea-434131",
+          "title": "Bold: Triple-Backbone Fusion (VJepa2+DINOv3+SigLIP2)"
+        }
+      ]
+    }
+  },
+  "refinement_analysis": {
+    "parent_child_pairs_with_ap": 40,
+    "improved": 0,
+    "success_rate": 0.0
+  },
+  "category_distribution": {
+    "architecture": {
+      "count": 37378,
+      "fraction": 0.8923319327731093
+    },
+    "hyperparameter": {
+      "count": 1839,
+      "fraction": 0.04390278838808251
+    },
+    "loss": {
+      "count": 1247,
+      "fraction": 0.029769862490450726
+    },
+    "augmentation": {
+      "count": 787,
+      "fraction": 0.018788197097020627
+    },
+    "data": {
+      "count": 417,
+      "fraction": 0.009955118411000764
+    },
+    "regularization": {
+      "count": 116,
+      "fraction": 0.0027692895339954163
+    },
+    "backbone": {
+      "count": 21,
+      "fraction": 0.000501336898395722
+    },
+    "ensemble": {
+      "count": 19,
+      "fraction": 0.00045359052711993887
+    },
+    "refinement": {
+      "count": 18,
+      "fraction": 0.00042971734148204737
+    },
+    "distillation": {
+      "count": 9,
+      "fraction": 0.00021485867074102369
+    },
+    "training_strategy": {
+      "count": 7,
+      "fraction": 0.00016711229946524063
+    },
+    "training": {
+      "count": 6,
+      "fraction": 0.00014323911382734913
+    },
+    "exploration": {
+      "count": 6,
+      "fraction": 0.00014323911382734913
+    },
+    "bold": {
+      "count": 4,
+      "fraction": 9.549274255156608e-05
+    },
+    "knowledge_distillation": {
+      "count": 4,
+      "fraction": 9.549274255156608e-05
+    },
+    "temporal_encoder": {
+      "count": 2,
+      "fraction": 4.774637127578304e-05
+    },
+    "novel": {
+      "count": 2,
+      "fraction": 4.774637127578304e-05
+    },
+    "validation": {
+      "count": 2,
+      "fraction": 4.774637127578304e-05
+    },
+    "baseline": {
+      "count": 1,
+      "fraction": 2.387318563789152e-05
+    },
+    "meta": {
+      "count": 1,
+      "fraction": 2.387318563789152e-05
+    },
+    "multi-backbone fusion": {
+      "count": 1,
+      "fraction": 2.387318563789152e-05
+    },
+    "novel architecture": {
+      "count": 1,
+      "fraction": 2.387318563789152e-05
+    }
+  }
+}
