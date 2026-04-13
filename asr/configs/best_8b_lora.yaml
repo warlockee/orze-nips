@@ -1,0 +1,18 @@
+# Best LoRA config: idea-0524ba (5.30% avg WER, #1 on Open ASR Leaderboard)
+# 10x AMI short oversample + 6K SPG + MLP targeting, rank 64.
+
+ami_short_oversample: 10
+data_mix:
+  ami: 10000
+  earnings22: 5000
+  librispeech: 3000
+  spgispeech: 6000
+  tedlium: 3000
+  voxpopuli: 4000
+epochs: 1
+lr: 2.0e-05
+rank: 64
+lora_alpha: 128
+lora_dropout: 0.02
+grad_accum: 4
+target_mlp: true

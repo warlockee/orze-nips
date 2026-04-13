@@ -1,0 +1,110 @@
+# orze.yaml -- ASR Leaderboard Auto-Research
+# Orchestration config for Orze autonomous research system.
+
+# --- REQUIRED ---
+train_script: train.py
+ideas_file: ideas.md
+results_dir: results
+base_config: configs/base.yaml
+
+# --- TIMEOUTS ---
+timeout: 25200             # 7h; training (3-4h) + eval (1-2h) + buffer
+poll: 30
+stall_minutes: 30
+max_idea_failures: 8
+max_fix_attempts: 2
+
+# --- REPORT ---
+report:
+  title: "ASR Leaderboard -- WER Results (8B)"
+  primary_metric: avg_wer
+  sort: ascending           # lower WER is better
+  target: 5.30              # 8B target
+  min_datasets: 6           # reject experiments with fewer per-dataset metrics
+  columns:
+    - {key: "avg_wer", label: "Avg WER%", fmt: ".2f"}
+    - {key: "wer_ami", label: "AMI%", fmt: ".2f"}
+    - {key: "wer_earnings22", label: "E22%", fmt: ".2f"}
+    - {key: "wer_gigaspeech", label: "GS%", fmt: ".2f"}
+    - {key: "wer_librispeech_test_clean_esb", label: "LS-C%", fmt: ".2f"}
+    - {key: "wer_librispeech_test_other_esb", label: "LS-O%", fmt: ".2f"}
+    - {key: "wer_spgispeech", label: "SPGI%", fmt: ".2f"}
+    - {key: "wer_tedlium", label: "TED%", fmt: ".2f"}
+    - {key: "wer_voxpopuli", label: "VP%", fmt: ".2f"}
+    - {key: "training_time", label: "Time(s)", fmt: ".0f"}
+
+# --- AGENT ROLES ---
+roles:
+  research:
+    mode: research                     # built-in orze-pro research agent
+    backend: gemini
+    model: gemini-3.1-pro-preview
+    rules_file: RESEARCH_RULES.md
+    num_ideas: 3
+    cooldown: 900
+    timeout: 600
+    log_dir: _research_logs
+
+  engineer:
+    mode: claude                       # Claude CLI with full tool access
+    rules_file: ENGINEER_RULES.md
+    model: opus
+    allowed_tools: "Read,Write,Edit,Glob,Grep,Bash"
+    cooldown: 300
+    timeout: 300
+    log_dir: _engineer_logs
+
+  professor:
+    mode: claude                       # Claude with global view
+    rules_file: PROFESSOR_RULES.md
+    model: opus
+    allowed_tools: "Read,Write,Edit,Glob,Grep,Bash"
+    cooldown: 600                      # review every 10 min
+    timeout: 600
+    pausable: false
+    log_dir: _professor_logs
+
+  code_evolution:
+    mode: claude
+    rules_file: ENGINEER_RULES.md
+    model: sonnet
+    allowed_tools: "Read,Write,Edit,Glob,Grep,Bash"
+    cooldown: 3600
+    timeout: 300
+    log_dir: _evolution_logs
+
+# --- SEALED FILES ---
+sealed_files:
+  - eval.py
+  - configs/base.yaml
+  - train.py
+
+# --- AUTO-EVOLUTION ---
+evolution:
+  enabled: true
+  max_attempts_per_plateau: 3
+
+# --- RETROSPECTION ---
+retrospection:
+  enabled: true
+  interval: 10
+  timeout: 120
+  plateau_window: 20
+  max_consecutive_family: 5
+  evolution_attempts_before_pause: 3
+  dispatch:
+    plateau: professor
+    family_imbalance: professor
+    high_failure_rate: professor
+
+# --- GC ---
+gc:
+  enabled: true
+  checkpoints_dir: checkpoints
+  keep_top: 50
+  keep_recent: 20
+
+# --- GPU SCHEDULING ---
+gpu_scheduling:
+  mode: exclusive
+  max_load_per_cpu: 4.0

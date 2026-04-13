@@ -101,6 +101,37 @@ cd training/
 python model_soup.py --results-dir results --top-k 5
 ```
 
+### Recipe C: ASR LoRA Fine-Tuning (Appendix D)
+
+Fine-tunes the Qwen3-8B decoder of HiggsAudio3 using LoRA while keeping the Whisper-Large-v3 encoder frozen.
+
+```bash
+cd asr/
+
+# Set model paths (or use HuggingFace hub IDs)
+export BOSON_PATH=/path/to/boson-multimodal-ref
+export MODEL_PATH=bosonai/higgs-audio-understanding-v3-8b
+export WHISPER_PATH=openai/whisper-large-v3
+
+# Reproduce the best result (idea-0524ba, 5.30% WER)
+python train.py \
+  --datasets ami_train:10000,earnings22_train:5000,librispeech_train:3000,spgispeech_train:6000,tedlium_train:3000,voxpopuli_train:4000 \
+  --output-dir checkpoints/8b_lora_best \
+  --epochs 1 --lr 2e-5 --lora-rank 64 --lora-alpha 128 \
+  --lora-dropout 0.02 --grad-accum 4 --target-mlp
+
+# Full LLM-guided campaign via Orze
+orze run --config configs/orze.yaml
+```
+
+| Parameter | Best Config | Description |
+|-----------|-------------|-------------|
+| `--lora-rank` | 64 | LoRA rank (higher = more capacity) |
+| `--lora-alpha` | 128 | LoRA alpha (scaling factor) |
+| `--lr` | 2e-5 | Learning rate with cosine decay |
+| `--target-mlp` | enabled | Also apply LoRA to MLP layers |
+| `--grad-accum` | 4 | Gradient accumulation steps |
+
 ## Evaluation
 
 To evaluate a trained checkpoint on the held-out test set:
@@ -120,6 +151,26 @@ python evaluation/eval_e2e_tta.py \
   results/<run_id>/best_model.pt \
   --stride 15 \
   --gpu 0
+```
+
+### ASR Evaluation (Open ASR Leaderboard)
+
+Evaluates on all 8 ESB benchmark datasets using the official Whisper text normalizer:
+
+```bash
+cd asr/
+
+# Evaluate base model
+python eval.py --output results/base_results.json
+
+# Evaluate with LoRA adapter
+python eval.py --lora-path checkpoints/8b_lora_best/best --output results/lora_results.json
+
+# Quick 500-sample evaluation (for iteration)
+python eval.py --lora-path checkpoints/8b_lora_best/best --max-samples 500
+
+# Evaluate specific datasets
+python eval.py --datasets ami,earnings22 --lora-path checkpoints/8b_lora_best/best
 ```
 
 ## Pre-trained Models
@@ -146,13 +197,14 @@ python train.py \
 
 ### Downloading Pre-trained Checkpoints
 
-Top-3 trained temporal classifier checkpoints are hosted on Hugging Face:
+Top-3 trained temporal classifier checkpoints and ASR LoRA adapters are hosted on Hugging Face:
 **https://huggingface.co/warlockee/orze-nips-models**
 
 ```python
 from huggingface_hub import hf_hub_download
 import torch
 
+# Collision detection checkpoint
 ckpt_path = hf_hub_download(
     repo_id="warlockee/orze-nips-models",
     filename="idea-502970/best_model.pt"
@@ -167,6 +219,25 @@ ckpt = torch.load(ckpt_path, map_location="cpu", weights_only=False)
 | `idea-2c0263/best_model.pt` | 0.7802 | 24 MB |
 
 Each checkpoint directory also contains `idea_config.yaml` and `metrics.json`.
+
+#### ASR LoRA Adapter
+
+```python
+from huggingface_hub import snapshot_download
+
+# Download the best ASR LoRA adapter (5.30% WER, #1 on Open ASR Leaderboard)
+lora_path = snapshot_download(
+    repo_id="warlockee/orze-nips-models",
+    allow_patterns="asr-8b-lora-best/*"
+)
+
+# Evaluate with the adapter
+# cd asr/ && python eval.py --lora-path $lora_path/asr-8b-lora-best
+```
+
+| HF Checkpoint | Avg WER | Size |
+|--------------|---------|------|
+| `asr-8b-lora-best/` | **5.30%** | 727 MB |
 
 ## Results
 
@@ -203,9 +274,21 @@ Backbone choice alone explains 48% of held-out test variance; all hyperparameter
 
 Under gradient-based adaptation, architecture eta-squared drops 4x while learning rate eta-squared rises to 0.79.
 
-### ASR Transfer
+### Appendix D: ASR Case Study (Open ASR Leaderboard)
 
-The LLM-constructed search space also achieved **#1 and #2 on the Open ASR Leaderboard** (5.30% and 5.36% WER).
+The same Orze-driven methodology transferred to automatic speech recognition, achieving **#1 and #2 on the Open ASR Leaderboard** (5.30% and 5.36% avg WER) using LoRA fine-tuning on HiggsAudio3 (Whisper-Large-v3 encoder + Qwen decoder).
+
+| Model | Avg WER | AMI | E22 | GS | LS-C | LS-O | SPGI | TED | VP |
+|-------|---------|-----|-----|-----|------|------|------|-----|-----|
+| **Higgs-Audio-v3-8B + LoRA** | **5.30** | 6.23 | 11.33 | 9.34 | 1.24 | 2.34 | 3.14 | 3.14 | 5.63 |
+| Higgs-Audio-v3-1.7B + LoRA | 5.36 | — | — | — | — | — | — | — | — |
+| NVIDIA Canary-1B (prior #1) | 5.62 | — | — | — | — | — | — | — | — |
+
+Key findings:
+- 202 completed LoRA training experiments across 1,134 autonomous research cycles
+- Greedy decoding with thinking mode gives ~1% WER improvement
+- Data mix engineering (AMI short-utterance oversampling, balanced SPG/E22) dominates hyperparameter tuning
+- 500-sample evaluation estimates are ~0.6% optimistic vs full-scale
 
 ### Reproducing Tables and Figures
 
@@ -250,6 +333,17 @@ orze-nips/
 │       ├── mustan-vitb-zipformer/
 │       ├── nexvitad-bottleneck-zipformer/
 │       └── ttc-geometric-vitl-zipformer/
+├── asr/                               # Appendix D: ASR case study
+│   ├── train.py                       # LoRA fine-tuning (Whisper-LV3 + Qwen3-8B)
+│   ├── eval.py                        # WER evaluation on 8 ESB datasets
+│   ├── configs/
+│   │   ├── base.yaml                  # Default ASR hyperparameters
+│   │   ├── orze.yaml                  # Orze orchestration config (ASR)
+│   │   └── best_8b_lora.yaml         # Best LoRA config (5.30% WER)
+│   └── results/
+│       ├── verified_best.json         # Full-scale verified results
+│       ├── experiment_summary.json    # Summary of 202 experiments
+│       └── idea-0524ba/              # Best experiment metrics + config
 ├── analysis/
 │   ├── scripts/                       # Paper figure & table generation
 │   │   ├── compute_anova.py           # ANOVA decomposition
@@ -271,9 +365,12 @@ orze-nips/
 
 ## Experiment Data
 
-The full experiment logs (4,233 collision-detection experiments with metrics.json and idea_config.yaml per run) are hosted on Hugging Face Datasets:
+The full experiment logs are hosted on Hugging Face Datasets:
 
 **https://huggingface.co/datasets/warlockee/orze-nips-experiments**
+
+- **Collision detection**: 4,233 experiments in `nexar_experiments/idea-*/`
+- **ASR (Appendix D)**: 202 LoRA training experiments in `asr_experiments/idea-*/`
 
 ```python
 from huggingface_hub import snapshot_download
@@ -282,7 +379,8 @@ local_dir = snapshot_download(
     repo_id="warlockee/orze-nips-experiments",
     repo_type="dataset"
 )
-# Experiments are in: {local_dir}/nexar_experiments/idea-*/
+# Collision experiments: {local_dir}/nexar_experiments/idea-*/
+# ASR experiments:       {local_dir}/asr_experiments/idea-*/
 ```
 
 To run the paper analysis against the downloaded data:

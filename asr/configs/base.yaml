@@ -1,0 +1,41 @@
+# Base config for ASR evaluation experiments (8B model)
+# All ideas inherit from this config; idea-specific YAML overrides these values.
+
+# --- Model ---
+# Set via environment variables: MODEL_PATH, WHISPER_PATH, BOSON_PATH
+# Defaults: bosonai/higgs-audio-understanding-v3-8b, openai/whisper-large-v3
+
+# --- Generation / Decoding ---
+# Best known settings from 1000+ experiments:
+#   - Greedy decoding beats sampling
+#   - Thinking mode gives ~1% WER improvement
+#   - Repetition penalty hurts (forces hallucinated alternatives)
+do_sample: false
+max_new_tokens: 1024       # thinking mode needs token budget for <think> block + transcription
+enable_thinking: true
+
+# --- Eval ---
+eval_tasks:
+  - ami
+  - earnings22
+  - gigaspeech
+  - librispeech_test_clean_esb
+  - librispeech_test_other_esb
+  - spgispeech
+  - tedlium
+  - voxpopuli
+max_samples: 500           # fast iteration; set 0 for full eval
+partial_complete_min_fraction: 0.15
+
+# --- ASR Prompt ---
+system_prompt: ""
+user_prompt: "Transcribe the speech. Output only the spoken words in lowercase with no punctuation."
+
+# --- Finetuning (optional) ---
+# lora_path: null
+# finetune: false
+# learning_rate: 1.0e-4
+# num_train_steps: 500
+# lora_rank: 16
+# lora_alpha: 32
+# train_data: null
