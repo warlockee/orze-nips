@@ -144,7 +144,29 @@ python train.py \
   --results-dir results
 ```
 
-> **Note:** Pre-trained checkpoints will be hosted on Hugging Face Hub. Link: *coming soon*.
+### Downloading Pre-trained Checkpoints
+
+Top-3 trained temporal classifier checkpoints are hosted on Hugging Face:
+**https://huggingface.co/warlockee/orze-nips-models**
+
+```python
+from huggingface_hub import hf_hub_download
+import torch
+
+ckpt_path = hf_hub_download(
+    repo_id="warlockee/orze-nips-models",
+    filename="idea-502970/best_model.pt"
+)
+ckpt = torch.load(ckpt_path, map_location="cpu", weights_only=False)
+```
+
+| HF Checkpoint | Test mAP | Size |
+|--------------|----------|------|
+| `idea-502970/best_model.pt` | **0.7853** | 24 MB |
+| `idea-eb79fc/best_model.pt` | 0.7816 | 11 MB |
+| `idea-2c0263/best_model.pt` | 0.7802 | 24 MB |
+
+Each checkpoint directory also contains `idea_config.yaml` and `metrics.json`.
 
 ## Results
 
@@ -249,19 +271,28 @@ orze-nips/
 
 ## Experiment Data
 
-The paper analyzes 10,000+ experiments. The full experiment logs (metrics, configs, training curves) will be released on Zenodo/Hugging Face:
+The full experiment logs (4,233 collision-detection experiments with metrics.json and idea_config.yaml per run) are hosted on Hugging Face Datasets:
 
-> **Download link:** *coming soon*
+**https://huggingface.co/datasets/warlockee/orze-nips-experiments**
 
-To use the experiment data with the analysis scripts:
+```python
+from huggingface_hub import snapshot_download
+
+local_dir = snapshot_download(
+    repo_id="warlockee/orze-nips-experiments",
+    repo_type="dataset"
+)
+# Experiments are in: {local_dir}/nexar_experiments/idea-*/
+```
+
+To run the paper analysis against the downloaded data:
 
 ```bash
-# Download and extract experiment logs
-# tar -xzf orze-nips-experiments.tar.gz -C experiments/
+export RESULTS_DIR=$(python -c "from huggingface_hub import snapshot_download; print(snapshot_download('warlockee/orze-nips-experiments', repo_type='dataset'))")/nexar_experiments
 
-# Run analysis
 cd analysis/
 python scripts/compute_anova.py
+python scripts/compute_convergence.py
 python scripts/generate_figures.py
 ```
 
